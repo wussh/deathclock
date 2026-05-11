@@ -57,33 +57,35 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
   const sortedGoals = [...goals].sort((a, b) => priorityWeight[b.priority] - priorityWeight[a.priority]);
 
   return (
-    <div className="space-y-12">
+    <div id="phase-02" className="space-y-12">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
-          <div className="space-y-1">
-            <h3 className="text-2xl font-black uppercase tracking-tighter italic font-serif">Aspiration Mapping</h3>
-            <p className="font-mono text-[10px] opacity-50 uppercase tracking-widest">Phase 02: Allocation</p>
+          <div className="space-y-2">
+            <div className="inline-block border border-[var(--color-line)] bg-[var(--color-card)] px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] tracking-wider">
+              Phase 02: Allocation
+            </div>
+            <h3 className="text-3xl font-bold tracking-tight">Aspiration Mapping</h3>
           </div>
 
-          <form onSubmit={handleAddGoal} className="space-y-4 p-6 border border-[var(--color-ink)] bg-white">
+          <form onSubmit={handleAddGoal} className="space-y-6 glass-card p-6">
             <div className="space-y-2">
-              <label className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-50">Intention</label>
+              <label className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50">Intention</label>
               <input
                 type="text"
                 placeholder="e.g. Master piano"
                 value={newGoal.title}
                 onChange={e => setNewGoal({ ...newGoal, title: e.target.value })}
-                className="w-full bg-transparent border-b border-[var(--color-line)] py-2 font-mono text-sm focus:border-[var(--color-accent)] outline-none"
+                className="input-field"
               />
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-50">Category</label>
+                <label className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50">Category</label>
                 <select
                   value={newGoal.category}
                   onChange={e => setNewGoal({ ...newGoal, category: e.target.value })}
-                  className="w-full bg-transparent border-b border-[var(--color-line)] py-2 font-mono text-sm focus:border-[var(--color-accent)] outline-none"
+                  className="input-field text-sm"
                 >
                   {GOAL_CATEGORIES.map(c => (
                     <option key={c} value={c}>{c}</option>
@@ -92,11 +94,11 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
               </div>
 
               <div className="space-y-2">
-                <label className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-50">Priority</label>
+                <label className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50">Priority</label>
                 <select
                   value={newGoal.priority}
                   onChange={e => setNewGoal({ ...newGoal, priority: e.target.value as Goal['priority'] })}
-                  className="w-full bg-transparent border-b border-[var(--color-line)] py-2 font-mono text-sm focus:border-[var(--color-accent)] outline-none"
+                  className="input-field text-sm"
                 >
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
@@ -107,26 +109,26 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
 
             <button
               disabled={isLoading}
-              className="w-full bg-[var(--color-ink)] text-[var(--color-paper)] p-3 flex items-center justify-center gap-2 hover:bg-[var(--color-accent)] transition-all disabled:opacity-50"
+              className="btn-primary w-full disabled:opacity-50"
             >
-              {isLoading ? <Loader2 className="animate-spin" size={16} /> : <Plus size={16} />}
-              <span className="font-mono text-[10px] uppercase tracking-widest font-bold">Register Goal</span>
+              {isLoading ? <Loader2 className="animate-spin" size={18} /> : <Plus size={18} />}
+              <span className="font-mono text-xs uppercase tracking-widest font-bold">Register Goal</span>
             </button>
           </form>
 
-          <div className="p-4 border border-[var(--color-line)] space-y-4">
+          <div className="glass-card p-5 space-y-4 bg-gradient-to-br from-[var(--color-card)] to-transparent">
             <div className="flex justify-between items-end">
-              <span className="font-mono text-[9px] uppercase tracking-widest opacity-50">Committed Capacity</span>
-              <span className="text-xl font-bold">{percentageOfLife.toFixed(2)}%</span>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Committed Capacity</span>
+              <span className="text-2xl font-mono font-extrabold text-[var(--color-ink)]">{percentageOfLife.toFixed(2)}%</span>
             </div>
-            <div className="h-1 bg-[var(--color-line)] w-full overflow-hidden">
+            <div className="h-2 bg-[var(--color-line)] w-full overflow-hidden rounded-full">
                <motion.div 
                  initial={{ width: 0 }}
                  animate={{ width: `${Math.min(100, percentageOfLife)}%` }}
-                 className="h-full bg-[var(--color-accent)]"
+                 className="h-full bg-[var(--color-accent)] rounded-full transition-all duration-1000"
                />
             </div>
-            <p className="text-[10px] font-mono opacity-50 uppercase leading-tight italic">
+            <p className="text-[11px] text-[var(--color-muted)] leading-tight italic">
               Percentage of your remaining free time allocated to these goals.
             </p>
           </div>
@@ -139,9 +141,9 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
                 initial={{ opacity: 0 }} 
                 animate={{ opacity: 1 }} 
                 exit={{ opacity: 0 }}
-                className="h-full flex flex-col items-center justify-center border border-dashed border-[var(--color-line)] p-12 text-center opacity-30 italic font-mono text-sm"
+                className="h-full flex flex-col items-center justify-center glass-card border-dashed p-12 text-center text-[var(--color-muted)] italic text-sm"
               >
-                <Target size={40} className="mb-4 opacity-50" />
+                <Target size={48} className="mb-4 opacity-50 text-[var(--color-accent)]" />
                 No active goals registered in the system.
               </motion.div>
             ) : (
@@ -177,7 +179,7 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
   const costPercentage = (goal.hoursNeeded / freeHours) * 100;
 
   const PriorityIcon = goal.priority === 'high' ? ArrowUpCircle : goal.priority === 'medium' ? ArrowRightCircle : ArrowDownCircle;
-  const priorityColor = goal.priority === 'high' ? 'text-[var(--color-accent)]' : goal.priority === 'medium' ? 'text-orange-500' : 'text-stone-500';
+  const priorityColor = goal.priority === 'high' ? 'text-[var(--color-accent)]' : goal.priority === 'medium' ? 'text-orange-500' : 'text-[var(--color-muted)]';
 
   return (
     <motion.div
@@ -186,31 +188,40 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       transition={{ type: "spring", stiffness: 250, damping: 25 }}
-      className="bg-white border-l-4 border-l-[var(--color-ink)] hover:border-l-[var(--color-accent)] transition-all group overflow-hidden"
+      className="glass-card transition-all group overflow-hidden border-l-4 hover:border-l-[var(--color-accent)]"
+      style={{ borderLeftColor: goal.priority === 'high' ? 'var(--color-accent)' : goal.priority === 'medium' ? '#f97316' : '#78716c' }}
     >
       <div className="p-6 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="flex justify-between items-start mb-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-               <span className="font-mono text-[8px] bg-[var(--color-paper)] px-2 py-0.5 uppercase tracking-widest">{goal.category}</span>
-               <span className={cn("flex items-center gap-1 font-mono text-[8px] uppercase tracking-widest", priorityColor)}>
-                 <PriorityIcon size={10} /> {goal.priority} priority
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+               <span className="font-mono text-[10px] bg-[var(--color-card-hover)] px-2.5 py-1 rounded-full uppercase tracking-widest text-[var(--color-ink)]/70">{goal.category}</span>
+               <span className={cn("flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest font-semibold", priorityColor)}>
+                 <PriorityIcon size={14} /> {goal.priority} priority
                </span>
-               <span className="font-mono text-[8px] opacity-40 uppercase tracking-widest">{formatNumber(goal.hoursNeeded)} Hours Required</span>
+               <span className="font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest">{formatNumber(goal.hoursNeeded)} Hours Required</span>
             </div>
-            <h4 className="text-2xl font-bold tracking-tighter uppercase">{goal.title}</h4>
+            <h4 className="text-2xl font-bold tracking-tight">{goal.title}</h4>
           </div>
-          <div className="text-right">
-             <div className="text-xl font-bold text-[var(--color-accent)]">{costPercentage.toFixed(3)}%</div>
-             <div className="font-mono text-[8px] opacity-40 uppercase tracking-widest">Life Cost</div>
+          <div className="text-right flex flex-col items-end gap-1">
+             <div className="text-2xl font-mono font-extrabold text-[var(--color-accent)]">{costPercentage.toFixed(2)}%</div>
+             <div className="font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest">Life Cost</div>
           </div>
         </div>
 
         {insight && (
           <div className="space-y-4">
-            <div className="flex items-start gap-2 text-[var(--color-accent)] opacity-80 italic text-xs font-mono">
-              <Ghost size={14} className="shrink-0 mt-0.5" />
-              <p>"{insight.guiltTrip}"</p>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-start gap-2 text-[var(--color-accent)]/80 italic text-sm">
+                <Ghost size={16} className="shrink-0 mt-0.5" />
+                <p>"{insight.guiltTrip}"</p>
+              </div>
+              {insight.costOfDelay && (
+                <div className="flex items-start gap-2 text-orange-500/80 italic text-sm bg-orange-500/5 p-3 border border-orange-500/10 rounded-md">
+                  <span className="font-mono text-xs uppercase tracking-widest opacity-50 shrink-0 mt-0.5 whitespace-nowrap">Cost of Delay:</span>
+                  <p>{insight.costOfDelay}</p>
+                </div>
+              )}
             </div>
             
             <AnimatePresence initial={false}>
@@ -220,35 +231,36 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                  className="pt-4 border-t border-[var(--color-line)] space-y-4 overflow-hidden"
+                  className="pt-6 mt-4 border-t border-[var(--color-line)] space-y-6 overflow-hidden"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                       <h5 className="font-mono text-[9px] uppercase tracking-widest font-bold flex items-center gap-2">
-                         <Calendar size={12} /> Strategic Roadmap
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                       <h5 className="font-mono text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 text-[var(--color-muted)]">
+                         <Calendar size={14} className="text-[var(--color-accent)]" /> Strategic Roadmap
                        </h5>
-                       <ul className="space-y-1">
+                       <ul className="space-y-2">
                          {insight.milestones.map((m, i) => (
-                           <li key={i} className="text-[10px] font-mono opacity-60 border-l border-[var(--color-line)] pl-3 ml-1">
+                           <li key={i} className="text-sm text-[var(--color-ink)]/90 border-l-2 border-[var(--color-line)] pl-3">
+                             <span className="text-[var(--color-accent)]/50 font-mono text-xs mr-2">[{i+1}]</span>
                              {m}
                            </li>
                          ))}
                        </ul>
                     </div>
-                    <div className="space-y-2">
-                       <h5 className="font-mono text-[9px] uppercase tracking-widest font-bold">The Rationale</h5>
-                       <p className="text-[10px] font-mono opacity-60 italic leading-relaxed">
+                    <div className="space-y-3">
+                       <h5 className="font-mono text-[10px] uppercase tracking-widest font-bold text-[var(--color-muted)]">The Rationale</h5>
+                       <p className="text-sm text-[var(--color-ink)]/80 italic leading-relaxed bg-[var(--color-card)] p-4 rounded-lg border border-[var(--color-line)]">
                          {insight.rationale}
                        </p>
                     </div>
                   </div>
                   
-                  <div className="flex justify-end pt-2">
+                  <div className="flex justify-end pt-4 border-t border-[var(--color-line)]/50 mt-4">
                     <button 
                       onClick={(e) => { e.stopPropagation(); onRemove(); }}
-                      className="p-2 hover:bg-[var(--color-accent)] hover:text-white transition-colors opacity-20 group-hover:opacity-100"
+                      className="flex items-center gap-2 text-sm text-[var(--color-muted)] hover:text-red-500 transition-colors hover:bg-red-500/10 px-4 py-2 rounded-lg"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={16} /> Remove Goal
                     </button>
                   </div>
                 </motion.div>

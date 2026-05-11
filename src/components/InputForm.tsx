@@ -8,6 +8,39 @@ interface InputFormProps {
   onComplete: (data: UserData) => void;
 }
 
+const InputField = ({ 
+  label, 
+  value, 
+  onChange, 
+  icon: Icon, 
+  min = 0, 
+  max = 120,
+  itemVariants 
+}: { 
+  label: string, 
+  value: number, 
+  onChange: (v: number) => void, 
+  icon: any,
+  min?: number,
+  max?: number,
+  itemVariants?: any
+}) => (
+  <motion.div variants={itemVariants} className="space-y-2 group">
+    <div className="flex items-center gap-2 text-[var(--color-muted)] font-mono text-[10px] uppercase tracking-widest transition-colors group-focus-within:text-[var(--color-accent)]">
+      <Icon size={14} />
+      <span>{label}</span>
+    </div>
+    <input
+      type="number"
+      value={value}
+      onChange={(e) => onChange(Number(e.target.value))}
+      min={min}
+      max={max}
+      className="input-field"
+    />
+  </motion.div>
+);
+
 export default function InputForm({ onComplete }: InputFormProps) {
   const [data, setData] = React.useState<UserData>({
     age: 28,
@@ -23,37 +56,6 @@ export default function InputForm({ onComplete }: InputFormProps) {
     e.preventDefault();
     onComplete(data);
   };
-
-  const InputField = ({ 
-    label, 
-    value, 
-    onChange, 
-    icon: Icon, 
-    min = 0, 
-    max = 120 
-  }: { 
-    label: string, 
-    value: number, 
-    onChange: (v: number) => void, 
-    icon: any,
-    min?: number,
-    max?: number
-  }) => (
-    <motion.div variants={itemVariants} className="space-y-2 group">
-      <div className="flex items-center gap-2 text-[var(--color-ink)] opacity-50 font-mono text-[10px] uppercase tracking-widest group-focus-within:opacity-100 transition-opacity">
-        <Icon size={12} />
-        <span>{label}</span>
-      </div>
-      <input
-        type="number"
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        min={min}
-        max={max}
-        className="w-full bg-transparent border-b border-[var(--color-line)] py-2 font-mono text-xl focus:border-[var(--color-accent)] outline-none transition-colors"
-      />
-    </motion.div>
-  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -73,28 +75,30 @@ export default function InputForm({ onComplete }: InputFormProps) {
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="max-w-xl mx-auto py-12 px-6"
+      className="max-w-2xl mx-auto py-12 px-4"
     >
-      <motion.div variants={itemVariants} className="mb-12 space-y-4">
-        <h1 className="text-5xl font-extrabold tracking-tighter uppercase">Calculation of Persistence</h1>
-        <p className="text-sm text-[var(--color-ink)] opacity-60 font-mono italic">
-          "The first step to immortality is accurately measuring your mortality."
+      <motion.div variants={itemVariants} className="mb-12 space-y-4 text-center">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">Calculation of Persistence</h1>
+        <p className="text-sm text-[var(--color-muted)] font-mono">
+          First step to immortality is accurately measuring your mortality.
         </p>
       </motion.div>
 
-      <form onSubmit={handleSubmit} className="space-y-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <form onSubmit={handleSubmit} className="space-y-10 glass-card p-6 md:p-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <InputField 
             label="Current Age" 
             value={data.age} 
             onChange={(age) => setData({ ...data, age })} 
-            icon={User} 
+            icon={User}
+            itemVariants={itemVariants}
           />
           <InputField 
             label="Expected Lifespan" 
             value={data.expectedAge} 
             onChange={(expectedAge) => setData({ ...data, expectedAge })} 
-            icon={Heart} 
+            icon={Heart}
+            itemVariants={itemVariants}
           />
           <InputField 
             label="Sleep (Hours/Day)" 
@@ -102,6 +106,7 @@ export default function InputForm({ onComplete }: InputFormProps) {
             onChange={(sleepHours) => setData({ ...data, sleepHours })} 
             icon={Bed} 
             max={24}
+            itemVariants={itemVariants}
           />
           <InputField 
             label="Work (Hours/Day)" 
@@ -109,6 +114,7 @@ export default function InputForm({ onComplete }: InputFormProps) {
             onChange={(workHours) => setData({ ...data, workHours })} 
             icon={Briefcase} 
             max={24}
+            itemVariants={itemVariants}
           />
           <InputField 
             label="Social (Hours/Day)" 
@@ -116,6 +122,7 @@ export default function InputForm({ onComplete }: InputFormProps) {
             onChange={(socialHours) => setData({ ...data, socialHours })} 
             icon={Users} 
             max={24}
+            itemVariants={itemVariants}
           />
           <InputField 
             label="Leisure (Hours/Day)" 
@@ -123,24 +130,24 @@ export default function InputForm({ onComplete }: InputFormProps) {
             onChange={(leisureHours) => setData({ ...data, leisureHours })} 
             icon={Heart} 
             max={24}
+            itemVariants={itemVariants}
           />
         </div>
 
-        <motion.div variants={itemVariants} className="pt-6">
+        <motion.div variants={itemVariants} className="pt-4">
           <button
             type="submit"
-            className="group flex items-center justify-between w-full border border-[var(--color-ink)] p-4 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] transition-all duration-300"
+            className="btn-primary w-full group"
           >
             <span className="font-mono text-xs uppercase tracking-[0.2em] font-semibold">Generate Life Dashboard</span>
-            <ArrowRight className="group-hover:translate-x-2 transition-transform" size={18} />
+            <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
           </button>
         </motion.div>
       </form>
       
-      <motion.div variants={itemVariants} className="mt-12 pt-8 border-t border-[var(--color-line)] opacity-30">
-        <div className="flex flex-col gap-1 font-mono text-[8px] uppercase tracking-widest">
+      <motion.div variants={itemVariants} className="mt-8 flex justify-center">
+        <div className="flex flex-col gap-1 font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest text-center">
           <span>// System Ready</span>
-          <span>// Awaiting Physiological Inputs</span>
           <span>// Data will remain local to your session</span>
         </div>
       </motion.div>

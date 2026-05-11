@@ -36,8 +36,7 @@ export default function LifeClock({ userData }: LifeClockProps) {
 
     const width = 400;
     const height = 400;
-    const radius = Math.min(width, height) / 2;
-    const innerRadius = 40;
+    const radius = Math.min(width, height) / 2 - 20;
 
     const svg = d3.select(svgRef.current)
       .attr('width', '100%')
@@ -47,74 +46,86 @@ export default function LifeClock({ userData }: LifeClockProps) {
       .append('g')
       .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
-    const data = [
-      { label: 'Lived', value: userData.age, color: 'var(--color-ink)', total: userData.expectedAge, width: 25 },
-      { label: 'Awake', value: stats.awakeRemainingHours / (365.25 * 24), color: '#888', total: stats.totalRemainingHours / (365.25 * 24), width: 20 },
-      { label: 'Free', value: stats.freeRemainingHours / (365.25 * 24), color: 'var(--color-accent)', total: stats.totalRemainingHours / (365.25 * 24), width: 15 },
-    ];
+    const totalYears = userData.expectedAge;
+    const livedYears = userData.age;
+    const remainingYears = Math.max(0, totalYears - livedYears);
 
     const arc = d3.arc<any>()
-      .innerRadius((d, i) => innerRadius + i * 40)
-      .outerRadius((d, i) => innerRadius + i * 40 + d.width)
+      .innerRadius(radius - 12)
+      .outerRadius(radius)
       .startAngle(0)
-      .endAngle(d => (d.value / d.total) * 2 * Math.PI)
-      .cornerRadius(2);
+      .cornerRadius(6);
 
-    const backgroundArc = d3.arc<any>()
-      .innerRadius((d, i) => innerRadius + i * 40)
-      .outerRadius((d, i) => innerRadius + i * 40 + d.width)
-      .startAngle(0)
-      .endAngle(2 * Math.PI);
-
-    // Background tracks
-    svg.selectAll('.track')
-      .data(data)
-      .enter()
-      .append('path')
+    // Background track (Total Life)
+    svg.append('path')
+      .datum({ endAngle: 2 * Math.PI })
       .attr('class', 'track')
-      .attr('d', backgroundArc)
+      .attr('d', arc)
       .style('fill', 'var(--color-line)')
       .style('opacity', 0)
       .transition()
       .duration(1000)
-      .ease(d3.easeCubicOut)
-      .style('opacity', 0.2);
+      .style('opacity', 0.1);
 
-    // Progress arcs
-    svg.selectAll('.progress')
-      .data(data)
-      .enter()
-      .append('path')
-      .attr('class', 'progress')
+    // Lived part (Burned out, invisible or very faint)
+    svg.append('path')
+      .datum({ endAngle: (livedYears / totalYears) * 2 * Math.PI })
       .attr('d', arc)
-      .style('fill', d => d.color)
-      .attr('opacity', 0)
-      .transition()
-      .duration(2000)
-      .ease(d3.easeCubicOut)
-      .delay((d, i) => i * 300)
-      .attr('opacity', 1);
-
-    // Labels
-    svg.selectAll('.label')
-      .data(data)
-      .enter()
-      .append('text')
-      .attr('class', 'label')
-      .attr('x', d => innerRadius + data.indexOf(d) * 40 + d.width / 2)
-      .attr('y', 0)
-      .attr('dy', '0.35em')
-      .attr('transform', d => `rotate(-90)`)
-      .style('font-size', '8px')
-      .style('font-family', 'var(--font-mono)')
-      .style('text-transform', 'uppercase')
-      .style('fill', 'var(--color-ink)')
+      .style('fill', 'var(--color-muted)')
       .style('opacity', 0)
-      .text(d => d.label)
       .transition()
       .duration(1000)
-      .delay((d, i) => 1000 + i * 200)
-      .style('opacity', 0.4);
+      .style('opacity', 0.2);
+
+    // Remaining part (The Amber/Candle)
+    const remainingArc = d3.arc<any>()
+      .innerRadius(radius - 12)
+      .outerRadius(radius)
+      .cornerRadius(6);
+      
+    // Animate from full to remaining (shrinking start angle)
+    svg.append('path')
+      .datum({ startAngle: 0, endAngle: 2 * Math.PI }) // start from full
+      .attr('d', remainingArc)
+      .style('fill', 'var(--color-accent)')
+      .attr('opacity', 0)
+      .transition()
+      .duration(1000)
+      .attr('opacity', 1)
+      .transition()
+      .duration(2000)
+      .ease(d3.easeCubicInOut)
+      .attrTween('d', function(d: any) {
+        const iStart = d3.interpolate(d.startAngle, (livedYears / totalYears) * 2 * Math.PI);
+        return function(t) {
+          d.startAngle = iStart(t);
+          return remainingArc(d) as string;
+        };
+      });
+
+    // Add tick marks for years
+    const ticks = svg.append('g').attr('class', 'ticks');
+    for (let i = 0; i < totalYears; i++) {
+        if (i % 5 === 0) { // Every 5 years
+          const angle = (i / totalYears) * 2 * Math.PI - Math.PI / 2;
+          const x1 = Math.cos(angle) * (radius - 20);
+          const y1 = Math.sin(angle) * (radius - 20);
+          const x2 = Math.cos(angle) * (radius - 15);
+          const y2 = Math.sin(angle) * (radius - 15);
+          
+          ticks.append('line')
+            .attr('x1', x1)
+            .attr('y1', y1)
+            .attr('x2', x2)
+            .attr('y2', y2)
+            .style('stroke', 'var(--color-line)')
+            .style('stroke-width', 1)
+            .style('opacity', 0)
+            .transition()
+            .delay(1000 + i * 10)
+            .style('opacity', 0.5);
+        }
+    }
 
   }, [userData, stats]);
 
@@ -137,15 +148,15 @@ export default function LifeClock({ userData }: LifeClockProps) {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="relative aspect-square max-w-[400px] mx-auto w-full"
+        className="relative aspect-square max-w-[400px] mx-auto w-full glass-card flex items-center justify-center p-8 bg-[var(--color-card)]/50"
       >
-        <svg ref={svgRef} className="w-full h-full drop-shadow-2xl" />
+        <svg ref={svgRef} className="w-full h-full drop-shadow-2xl opacity-90" />
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <motion.span 
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.4 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="font-mono text-[10px] uppercase tracking-widest"
+            className="text-xs uppercase tracking-widest text-[var(--color-muted)] font-medium"
           >
             Balance
           </motion.span>
@@ -153,15 +164,15 @@ export default function LifeClock({ userData }: LifeClockProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, type: "spring" }}
-            className="text-3xl font-bold tracking-tighter"
+            className="text-4xl font-mono font-extrabold tracking-tight mt-1"
           >
             {formatNumber(stats.totalRemainingHours)}
           </motion.span>
           <motion.span 
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.4 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 1.4 }}
-            className="font-mono text-[10px] uppercase tracking-widest"
+            className="text-xs uppercase tracking-widest text-[var(--color-muted)] font-medium mt-1"
           >
             Hours
           </motion.span>
@@ -175,9 +186,11 @@ export default function LifeClock({ userData }: LifeClockProps) {
         viewport={{ once: true, margin: "-100px" }}
         className="space-y-8"
       >
-        <motion.div variants={itemVariants} className="space-y-1">
-          <h2 className="text-4xl font-black uppercase tracking-tighter italic font-serif">The Inventory</h2>
-          <p className="font-mono text-[10px] opacity-50 uppercase tracking-widest">Reality Check Phase 01</p>
+        <motion.div variants={itemVariants} className="space-y-2">
+          <div className="inline-block border border-[var(--color-line)] bg-[var(--color-card)] px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] tracking-wider">
+            Reality Check Phase 01
+          </div>
+          <h2 className="text-3xl font-bold tracking-tight">The Inventory</h2>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -214,9 +227,9 @@ export default function LifeClock({ userData }: LifeClockProps) {
           />
         </div>
         
-        <motion.div variants={itemVariants} className="p-4 border-l-2 border-[var(--color-accent)] bg-[var(--color-accent)] bg-opacity-5">
-           <p className="text-xs font-mono text-[var(--color-ink)] opacity-70 leading-relaxed italic">
-            "You have {formatNumber(stats.freeRemainingHours)} hours of true freedom left. Every hour you spend on distractions is a withdrawal from a finite bank account."
+        <motion.div variants={itemVariants} className="glass-card p-5 border-l-4 border-l-[var(--color-accent)] bg-gradient-to-br from-[var(--color-accent)]/10 to-transparent">
+           <p className="text-sm text-white/90 leading-relaxed italic">
+            "You have <span className="font-bold text-[var(--color-accent)] font-mono text-base">{formatNumber(stats.freeRemainingHours)} hours</span> of true freedom left. Every hour you spend on distractions is a withdrawal from a finite bank account."
            </p>
         </motion.div>
       </motion.div>
@@ -229,19 +242,19 @@ function StatCard({ icon, label, value, sub, highlight, accent, variants }: any)
     <motion.div 
       variants={variants}
       className={cn(
-        "p-4 border border-[var(--color-line)] group hover:border-[var(--color-ink)] transition-colors",
-        highlight && "bg-white",
-        accent && "border-[var(--color-accent)] bg-[var(--color-accent)]/5"
+        "glass-card p-5 transition-all group hover:border-[var(--color-accent)]/40 hover:-translate-y-1 duration-300",
+        highlight && "bg-white/5",
+        accent && "border-[var(--color-accent)]/30 outline outline-1 outline-[var(--color-accent)]/20 shadow-[0_4px_20px_rgba(255,78,0,0.1)]"
       )}
     >
-      <div className="flex items-center gap-2 mb-2 opacity-40 group-hover:opacity-100 transition-opacity">
+      <div className={cn("flex items-center gap-2 mb-3 text-[var(--color-muted)] group-hover:text-[var(--color-ink)] transition-colors", accent && "text-[var(--color-accent)] group-hover:text-[var(--color-accent)]")}>
         {icon}
-        <span className="font-mono text-[9px] uppercase tracking-widest font-semibold">{label}</span>
+        <span className="font-medium text-xs uppercase tracking-wider">{label}</span>
       </div>
-      <div className={cn("text-2xl font-bold tracking-tighter mb-1", accent && "text-[var(--color-accent)]")}>
+      <div className={cn("text-3xl font-mono font-extrabold tracking-tight mb-2", accent && "text-[var(--color-accent)]")}>
         {value}
       </div>
-      <div className="font-mono text-[8px] opacity-40 uppercase tracking-widest">{sub}</div>
+      <div className="text-xs text-[var(--color-muted)]">{sub}</div>
     </motion.div>
   );
 }

@@ -51,38 +51,39 @@ export default function ShareModal({ isOpen, onClose, userData, freeHours, goals
                 <X size={20} />
               </button>
 
-              <div id="share-card" className="p-8 pb-12 relative bg-[var(--color-paper)]">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)] opacity-5 rounded-bl-full pointer-events-none" />
+              <div id="share-card" className="p-8 pb-12 relative bg-zinc-900 text-zinc-50 border border-zinc-800 rounded-t-xl overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--color-accent)] opacity-10 rounded-bl-full pointer-events-none" />
+                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-[var(--color-accent)] opacity-5 rounded-tr-full pointer-events-none" />
                 
                 <div className="space-y-6 relative z-10">
                   <div className="flex items-center gap-2 mb-8">
-                    <div className="w-6 h-6 bg-[var(--color-ink)] flex items-center justify-center">
-                      <span className="text-[var(--color-paper)] font-black text-xs">D</span>
+                    <div className="w-6 h-6 bg-[var(--color-accent)] text-zinc-900 flex items-center justify-center rounded-sm">
+                      <span className="font-black text-xs">D</span>
                     </div>
-                    <span className="font-black uppercase tracking-tighter text-sm">DeathClock.ai</span>
+                    <span className="font-black uppercase tracking-widest text-[10px] text-zinc-400">DeathClock.ai</span>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="font-mono text-[10px] uppercase tracking-widest opacity-50">Audited Life Balance</div>
-                    <div className="text-5xl font-black tracking-tighter leading-none">
-                      {formatNumber(freeHours)} <span className="text-2xl">hrs</span>
+                  <div className="space-y-2 pt-4">
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-accent)]">Official Audit</div>
+                    <div className="text-3xl font-extrabold tracking-tight leading-snug">
+                      I have exactly <span className="text-[var(--color-accent)] font-mono">{formatNumber(freeHours)} free hours</span> left in my life.
                     </div>
                   </div>
 
-                  <div className="h-px w-full bg-[var(--color-ink)] opacity-10 my-6" />
+                  <div className="h-px w-full bg-zinc-800 my-8" />
 
-                  <div className="space-y-1">
-                    <div className="font-mono text-[10px] uppercase tracking-widest opacity-50">Primary Allocation</div>
-                    <div className="text-2xl font-bold italic font-serif leading-tight">
-                      "{topGoal}"
+                  <div className="space-y-4">
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">And I'm spending them on:</div>
+                    <div className="text-4xl font-black tracking-tight text-white block break-words border-l-4 border-[var(--color-accent)] pl-5 py-2 leading-none">
+                      {topGoal}
                     </div>
                   </div>
                   
-                  <div className="pt-6 mt-6 border-t border-[var(--color-ink)] border-dashed opacity-50 flex justify-between items-end">
-                    <div className="font-mono text-[8px] uppercase tracking-widest">
-                      Age: {userData.age} / {userData.expectedAge}
+                  <div className="pt-8 mt-4 flex justify-between items-end text-zinc-600">
+                    <div className="font-mono text-[9px] uppercase tracking-widest">
+                      Age {userData.age} / Expectancy {userData.expectedAge}
                     </div>
-                    <div className="font-mono text-[8px] uppercase tracking-widest text-[var(--color-accent)]">
+                    <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--color-accent)]/80 border border-[var(--color-accent)]/20 px-2 py-1 rounded">
                       Reality Check: Active
                     </div>
                   </div>

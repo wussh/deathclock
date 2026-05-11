@@ -29,7 +29,8 @@ Provide a JSON response with the following structure:
   "estimatedHours": number,
   "rationale": "short 1-2 sentence explanation",
   "milestones": ["milestone 1", "milestone 2", "milestone 3"],
-  "guiltTrip": "A punchy, slightly haunting sentence about why they should start now instead of later."
+  "guiltTrip": "A punchy, slightly haunting sentence about why they should start now instead of later.",
+  "costOfDelay": "A concrete gap showing where they would be right now if they had started 1 year ago. E.g., 'If you started 1 year ago, you would already be speaking conversational French right now.' or 'You would already have $10,000 saved.'."
 }
 `;
 

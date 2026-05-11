@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,300;1,400&family=Inter:wght@300;400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,300;1,400&family=Inter:wght@300;400;500;600;800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -6,10 +6,13 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   --font-serif: "Playfair Display", serif;
   
-  --color-ink: #0a0a0a;
-  --color-paper: #e4e3e0;
-  --color-accent: #ff4e00;
-  --color-line: rgba(20, 20, 20, 0.1);
+  --color-ink: #ffffff;
+  --color-paper: #09090b;
+  --color-card: rgba(255, 255, 255, 0.03);
+  --color-card-hover: rgba(255, 255, 255, 0.06);
+  --color-accent: #f59e0b; /* Amber */
+  --color-line: rgba(255, 255, 255, 0.1);
+  --color-muted: #a1a1aa;
 }
 
 @layer base {
@@ -21,9 +24,25 @@
 @layer components {
   .mission-control-bg {
     background-image: 
-      linear-gradient(var(--color-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+      radial-gradient(circle at center, var(--color-line) 1px, transparent 1px);
     background-size: 40px 40px;
+    background-position: -20px -20px;
+  }
+  
+  .glass-card {
+    @apply bg-[var(--color-card)] border border-[var(--color-line)] backdrop-blur-xl rounded-2xl shadow-2xl;
+  }
+  
+  .input-field {
+    @apply w-full bg-black/40 border border-[var(--color-line)] rounded-xl px-4 py-3 font-mono text-lg focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none transition-all text-[var(--color-ink)];
+  }
+
+  .btn-primary {
+    @apply bg-[var(--color-accent)] text-white px-6 py-4 rounded-xl font-medium hover:bg-[#ff6a2b] transition-all duration-300 shadow-[0_0_20px_rgba(255,78,0,0.2)] hover:shadow-[0_0_30px_rgba(255,78,0,0.4)] flex items-center justify-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply bg-[var(--color-card)] border border-[var(--color-line)] text-[var(--color-ink)] px-6 py-4 rounded-xl font-medium hover:bg-[var(--color-card-hover)] transition-all flex items-center justify-center gap-2;
   }
 }
 

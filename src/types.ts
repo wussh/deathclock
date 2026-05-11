@@ -35,4 +35,5 @@ export interface GoalInsight {
   rationale: string;
   milestones: string[];
   guiltTrip: string;
+  costOfDelay: string;
 }
