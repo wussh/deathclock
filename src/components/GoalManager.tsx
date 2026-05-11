@@ -3,7 +3,7 @@ import { Goal, GoalInsight } from '../types';
 import { analyzeGoal } from '../services/gemini';
 import { GOAL_CATEGORIES } from '../constants';
 import { cn, formatNumber } from '../lib/utils';
-import { Plus, Loader2, Target, Calendar, Ghost, Trash2 } from 'lucide-react';
+import { Plus, Loader2, Target, Calendar, Ghost, Trash2, ArrowUpCircle, ArrowRightCircle, ArrowDownCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface GoalManagerProps {
@@ -15,7 +15,7 @@ interface GoalManagerProps {
 export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerProps) {
   const [insights, setInsights] = React.useState<Record<string, GoalInsight>>({});
   const [isLoading, setIsLoading] = React.useState(false);
-  const [newGoal, setNewGoal] = React.useState({ title: '', category: GOAL_CATEGORIES[0] });
+  const [newGoal, setNewGoal] = React.useState({ title: '', category: GOAL_CATEGORIES[0], priority: 'medium' as Goal['priority'] });
 
   const handleAddGoal = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,13 +32,13 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
         title: newGoal.title,
         category: newGoal.category,
         hoursNeeded: insight.estimatedHours,
-        priority: 'medium',
+        priority: newGoal.priority,
         createdAt: Date.now(),
       };
 
-      setGoals(prev => [goal, ...prev]);
+      setGoals(prev => [...prev, goal]);
       setInsights(prev => ({ ...prev, [goalId]: insight }));
-      setNewGoal({ title: '', category: GOAL_CATEGORIES[0] });
+      setNewGoal({ title: '', category: GOAL_CATEGORIES[0], priority: 'medium' });
     } catch (error) {
       console.error(error);
     } finally {
@@ -52,6 +52,9 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
 
   const totalGoalHours = goals.reduce((acc, curr) => acc + curr.hoursNeeded, 0);
   const percentageOfLife = (totalGoalHours / freeHours) * 100;
+
+  const priorityWeight = { high: 3, medium: 2, low: 1 };
+  const sortedGoals = [...goals].sort((a, b) => priorityWeight[b.priority] - priorityWeight[a.priority]);
 
   return (
     <div className="space-y-12">
@@ -74,17 +77,32 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
               />
             </div>
             
-            <div className="space-y-2">
-              <label className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-50">Category</label>
-              <select
-                value={newGoal.category}
-                onChange={e => setNewGoal({ ...newGoal, category: e.target.value })}
-                className="w-full bg-transparent border-b border-[var(--color-line)] py-2 font-mono text-sm focus:border-[var(--color-accent)] outline-none"
-              >
-                {GOAL_CATEGORIES.map(c => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-50">Category</label>
+                <select
+                  value={newGoal.category}
+                  onChange={e => setNewGoal({ ...newGoal, category: e.target.value })}
+                  className="w-full bg-transparent border-b border-[var(--color-line)] py-2 font-mono text-sm focus:border-[var(--color-accent)] outline-none"
+                >
+                  {GOAL_CATEGORIES.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-50">Priority</label>
+                <select
+                  value={newGoal.priority}
+                  onChange={e => setNewGoal({ ...newGoal, priority: e.target.value as Goal['priority'] })}
+                  className="w-full bg-transparent border-b border-[var(--color-line)] py-2 font-mono text-sm focus:border-[var(--color-accent)] outline-none"
+                >
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
             </div>
 
             <button
@@ -116,14 +134,19 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
 
         <div className="lg:col-span-2 space-y-4">
           <AnimatePresence mode="popLayout">
-            {goals.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center border border-dashed border-[var(--color-line)] p-12 text-center opacity-30 italic font-mono text-sm">
+            {sortedGoals.length === 0 ? (
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                exit={{ opacity: 0 }}
+                className="h-full flex flex-col items-center justify-center border border-dashed border-[var(--color-line)] p-12 text-center opacity-30 italic font-mono text-sm"
+              >
                 <Target size={40} className="mb-4 opacity-50" />
                 No active goals registered in the system.
-              </div>
+              </motion.div>
             ) : (
               <div className="space-y-4">
-                {goals.map((goal) => (
+                {sortedGoals.map((goal) => (
                   <GoalCard 
                     key={goal.id} 
                     goal={goal} 
@@ -153,6 +176,9 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const costPercentage = (goal.hoursNeeded / freeHours) * 100;
 
+  const PriorityIcon = goal.priority === 'high' ? ArrowUpCircle : goal.priority === 'medium' ? ArrowRightCircle : ArrowDownCircle;
+  const priorityColor = goal.priority === 'high' ? 'text-[var(--color-accent)]' : goal.priority === 'medium' ? 'text-orange-500' : 'text-stone-500';
+
   return (
     <motion.div
       layout
@@ -167,6 +193,9 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
                <span className="font-mono text-[8px] bg-[var(--color-paper)] px-2 py-0.5 uppercase tracking-widest">{goal.category}</span>
+               <span className={cn("flex items-center gap-1 font-mono text-[8px] uppercase tracking-widest", priorityColor)}>
+                 <PriorityIcon size={10} /> {goal.priority} priority
+               </span>
                <span className="font-mono text-[8px] opacity-40 uppercase tracking-widest">{formatNumber(goal.hoursNeeded)} Hours Required</span>
             </div>
             <h4 className="text-2xl font-bold tracking-tighter uppercase">{goal.title}</h4>
