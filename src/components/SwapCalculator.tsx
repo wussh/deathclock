@@ -95,8 +95,9 @@ export default function SwapCalculator() {
             ) : (
               <motion.div
                 key="result"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
                 className="bg-[var(--color-ink)] text-[var(--color-paper)] p-8 h-full flex flex-col justify-center border-l-4 border-[var(--color-accent)] shadow-[8px_8px_0_0_rgba(10,10,10,0.1)]"
               >
                 <div className="space-y-6">

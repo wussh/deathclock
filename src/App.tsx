@@ -1,15 +1,18 @@
-import React from 'react';
-import { UserData } from './types';
+import React, { useState } from 'react';
+import { UserData, Goal } from './types';
 import InputForm from './components/InputForm';
 import LifeClock from './components/LifeClock';
 import GoalManager from './components/GoalManager';
 import SwapCalculator from './components/SwapCalculator';
+import ShareModal from './components/ShareModal';
 import { motion, AnimatePresence } from 'motion/react';
 import { Share2, Clock, Map, Activity, RefreshCw } from 'lucide-react';
 
 export default function App() {
   const [userData, setUserData] = React.useState<UserData | null>(null);
   const [view, setView] = React.useState<'landing' | 'onboarding' | 'dashboard'>('landing');
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [goals, setGoals] = useState<Goal[]>([]);
 
   const freeHours = React.useMemo(() => {
     if (!userData) return 0;
@@ -37,7 +40,9 @@ export default function App() {
              >
                <RefreshCw size={16} />
              </button>
-             <button className="flex items-center gap-2 border border-[var(--color-ink)] px-3 py-1.5 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] transition-all">
+             <button 
+                onClick={() => setIsShareModalOpen(true)}
+                className="flex items-center gap-2 border border-[var(--color-ink)] px-3 py-1.5 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] transition-all">
                 <Share2 size={14} />
                 <span className="font-mono text-[9px] uppercase tracking-widest font-bold">Share Identity</span>
              </button>
@@ -50,29 +55,45 @@ export default function App() {
           {view === 'landing' && (
             <motion.section
               key="landing"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], staggerChildren: 0.1 }}
               className="max-w-4xl mx-auto px-6 py-24 text-center space-y-12"
             >
               <div className="space-y-4">
                 <motion.div
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
+                  transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
                   className="font-mono text-xs uppercase tracking-[0.4em] opacity-40"
                 >
                   Project Mortality. System Online.
                 </motion.div>
-                <h1 className="text-7xl md:text-9xl font-black uppercase tracking-tighter leading-none font-serif italic">
+                <motion.h1 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-7xl md:text-9xl font-black uppercase tracking-tighter leading-none font-serif italic"
+                >
                   Tempus Fugit
-                </h1>
-                <p className="text-xl md:text-2xl font-mono opacity-60 max-w-2xl mx-auto leading-tight italic">
+                </motion.h1>
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-xl md:text-2xl font-mono opacity-60 max-w-2xl mx-auto leading-tight italic"
+                >
                   "You have roughly 24,000 hours before your next decade. What will you trade them for?"
-                </p>
+                </motion.p>
               </div>
 
-              <div className="flex flex-col items-center gap-8">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col items-center gap-8"
+              >
                 <button
                   onClick={() => setView('onboarding')}
                   className="group relative border-2 border-[var(--color-ink)] px-12 py-5 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] transition-all duration-500 overflow-hidden"
@@ -86,7 +107,7 @@ export default function App() {
                   <Feature title="Goal Mapping" desc="AI estimates the cost of your dreams in units of life." icon={<Map size={20} />} />
                   <Feature title="Reality Engine" desc="Cold, hard data to break the cycle of later." icon={<Activity size={20} />} />
                 </div>
-              </div>
+              </motion.div>
             </motion.section>
           )}
 
@@ -96,6 +117,7 @@ export default function App() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
             >
               <InputForm 
                 onComplete={(data) => {
@@ -109,13 +131,14 @@ export default function App() {
           {view === 'dashboard' && userData && (
             <motion.section
               key="dashboard"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 100, damping: 20, staggerChildren: 0.1 }}
               className="max-w-7xl mx-auto px-6 py-12 space-y-24"
             >
               <LifeClock userData={userData} />
               <div className="h-px bg-[var(--color-line)]" />
-              <GoalManager freeHours={freeHours} />
+              <GoalManager freeHours={freeHours} goals={goals} setGoals={setGoals} />
               <div className="h-px bg-[var(--color-line)]" />
               <SwapCalculator />
             </motion.section>
@@ -135,6 +158,14 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)} 
+        userData={userData}
+        freeHours={freeHours}
+        goals={goals}
+      />
     </div>
   );
 }

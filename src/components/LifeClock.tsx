@@ -74,6 +74,10 @@ export default function LifeClock({ userData }: LifeClockProps) {
       .attr('class', 'track')
       .attr('d', backgroundArc)
       .style('fill', 'var(--color-line)')
+      .style('opacity', 0)
+      .transition()
+      .duration(1000)
+      .ease(d3.easeCubicOut)
       .style('opacity', 0.2);
 
     // Progress arcs
@@ -86,8 +90,9 @@ export default function LifeClock({ userData }: LifeClockProps) {
       .style('fill', d => d.color)
       .attr('opacity', 0)
       .transition()
-      .duration(1500)
-      .delay((d, i) => i * 200)
+      .duration(2000)
+      .ease(d3.easeCubicOut)
+      .delay((d, i) => i * 300)
       .attr('opacity', 1);
 
     // Labels
@@ -104,36 +109,87 @@ export default function LifeClock({ userData }: LifeClockProps) {
       .style('font-family', 'var(--font-mono)')
       .style('text-transform', 'uppercase')
       .style('fill', 'var(--color-ink)')
-      .style('opacity', 0.4)
-      .text(d => d.label);
+      .style('opacity', 0)
+      .text(d => d.label)
+      .transition()
+      .duration(1000)
+      .delay((d, i) => 1000 + i * 200)
+      .style('opacity', 0.4);
 
   }, [userData, stats]);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div className="relative aspect-square max-w-[400px] mx-auto w-full">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="relative aspect-square max-w-[400px] mx-auto w-full"
+      >
         <svg ref={svgRef} className="w-full h-full drop-shadow-2xl" />
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="font-mono text-[10px] opacity-40 uppercase tracking-widest">Balance</span>
-          <span className="text-3xl font-bold tracking-tighter">{formatNumber(stats.totalRemainingHours)}</span>
-          <span className="font-mono text-[10px] opacity-40 uppercase tracking-widest">Hours</span>
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.4 }}
+            transition={{ delay: 1 }}
+            className="font-mono text-[10px] uppercase tracking-widest"
+          >
+            Balance
+          </motion.span>
+          <motion.span 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, type: "spring" }}
+            className="text-3xl font-bold tracking-tighter"
+          >
+            {formatNumber(stats.totalRemainingHours)}
+          </motion.span>
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.4 }}
+            transition={{ delay: 1.4 }}
+            className="font-mono text-[10px] uppercase tracking-widest"
+          >
+            Hours
+          </motion.span>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="space-y-8">
-        <div className="space-y-1">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        className="space-y-8"
+      >
+        <motion.div variants={itemVariants} className="space-y-1">
           <h2 className="text-4xl font-black uppercase tracking-tighter italic font-serif">The Inventory</h2>
           <p className="font-mono text-[10px] opacity-50 uppercase tracking-widest">Reality Check Phase 01</p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <StatCard 
+            variants={itemVariants}
             icon={<Clock size={16} />} 
             label="Remaining Years" 
             value={stats.yearsRemaining.toFixed(1)} 
             sub="Total estimated duration"
           />
           <StatCard 
+            variants={itemVariants}
             icon={<Sun size={16} />} 
             label="Conscious Hours" 
             value={formatNumber(stats.awakeRemainingHours)} 
@@ -141,12 +197,14 @@ export default function LifeClock({ userData }: LifeClockProps) {
             highlight
           />
           <StatCard 
+            variants={itemVariants}
             icon={<Moon size={16} />} 
             label="Sleeping Time" 
             value={formatNumber(stats.totalRemainingHours - stats.awakeRemainingHours)} 
             sub="Hours lost to dreams"
           />
           <StatCard 
+            variants={itemVariants}
             icon={<Coffee size={16} />} 
             label="Net Free Time" 
             value={formatNumber(stats.freeRemainingHours)} 
@@ -156,21 +214,20 @@ export default function LifeClock({ userData }: LifeClockProps) {
           />
         </div>
         
-        <div className="p-4 border-l-2 border-[var(--color-accent)] bg-[var(--color-accent)] bg-opacity-5">
+        <motion.div variants={itemVariants} className="p-4 border-l-2 border-[var(--color-accent)] bg-[var(--color-accent)] bg-opacity-5">
            <p className="text-xs font-mono text-[var(--color-ink)] opacity-70 leading-relaxed italic">
             "You have {formatNumber(stats.freeRemainingHours)} hours of true freedom left. Every hour you spend on distractions is a withdrawal from a finite bank account."
            </p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
 
-function StatCard({ icon, label, value, sub, highlight, accent }: any) {
+function StatCard({ icon, label, value, sub, highlight, accent, variants }: any) {
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      variants={variants}
       className={cn(
         "p-4 border border-[var(--color-line)] group hover:border-[var(--color-ink)] transition-colors",
         highlight && "bg-white",

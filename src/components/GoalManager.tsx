@@ -8,10 +8,11 @@ import { motion, AnimatePresence } from 'motion/react';
 
 interface GoalManagerProps {
   freeHours: number;
+  goals: Goal[];
+  setGoals: React.Dispatch<React.SetStateAction<Goal[]>>;
 }
 
-export default function GoalManager({ freeHours }: GoalManagerProps) {
-  const [goals, setGoals] = React.useState<Goal[]>([]);
+export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerProps) {
   const [insights, setInsights] = React.useState<Record<string, GoalInsight>>({});
   const [isLoading, setIsLoading] = React.useState(false);
   const [newGoal, setNewGoal] = React.useState({ title: '', category: GOAL_CATEGORIES[0] });
@@ -155,9 +156,10 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95, y: -10 }}
+      transition={{ type: "spring", stiffness: 250, damping: 25 }}
       className="bg-white border-l-4 border-l-[var(--color-ink)] hover:border-l-[var(--color-accent)] transition-all group overflow-hidden"
     >
       <div className="p-6 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
@@ -182,12 +184,13 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
               <p>"{insight.guiltTrip}"</p>
             </div>
             
-            <AnimatePresence>
+            <AnimatePresence initial={false}>
               {isExpanded && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 20 }}
                   className="pt-4 border-t border-[var(--color-line)] space-y-4 overflow-hidden"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

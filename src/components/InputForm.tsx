@@ -2,6 +2,7 @@ import React from 'react';
 import { UserData } from '../types';
 import { cn } from '../lib/utils';
 import { ArrowRight, User, Bed, Briefcase, Heart, Users } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface InputFormProps {
   onComplete: (data: UserData) => void;
@@ -38,7 +39,7 @@ export default function InputForm({ onComplete }: InputFormProps) {
     min?: number,
     max?: number
   }) => (
-    <div className="space-y-2 group">
+    <motion.div variants={itemVariants} className="space-y-2 group">
       <div className="flex items-center gap-2 text-[var(--color-ink)] opacity-50 font-mono text-[10px] uppercase tracking-widest group-focus-within:opacity-100 transition-opacity">
         <Icon size={12} />
         <span>{label}</span>
@@ -51,17 +52,35 @@ export default function InputForm({ onComplete }: InputFormProps) {
         max={max}
         className="w-full bg-transparent border-b border-[var(--color-line)] py-2 font-mono text-xl focus:border-[var(--color-accent)] outline-none transition-colors"
       />
-    </div>
+    </motion.div>
   );
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+  };
+
   return (
-    <div className="max-w-xl mx-auto py-12 px-6">
-      <div className="mb-12 space-y-4">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="max-w-xl mx-auto py-12 px-6"
+    >
+      <motion.div variants={itemVariants} className="mb-12 space-y-4">
         <h1 className="text-5xl font-extrabold tracking-tighter uppercase">Calculation of Persistence</h1>
         <p className="text-sm text-[var(--color-ink)] opacity-60 font-mono italic">
           "The first step to immortality is accurately measuring your mortality."
         </p>
-      </div>
+      </motion.div>
 
       <form onSubmit={handleSubmit} className="space-y-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -107,7 +126,7 @@ export default function InputForm({ onComplete }: InputFormProps) {
           />
         </div>
 
-        <div className="pt-6">
+        <motion.div variants={itemVariants} className="pt-6">
           <button
             type="submit"
             className="group flex items-center justify-between w-full border border-[var(--color-ink)] p-4 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] transition-all duration-300"
@@ -115,16 +134,16 @@ export default function InputForm({ onComplete }: InputFormProps) {
             <span className="font-mono text-xs uppercase tracking-[0.2em] font-semibold">Generate Life Dashboard</span>
             <ArrowRight className="group-hover:translate-x-2 transition-transform" size={18} />
           </button>
-        </div>
+        </motion.div>
       </form>
       
-      <div className="mt-12 pt-8 border-t border-[var(--color-line)] opacity-30">
+      <motion.div variants={itemVariants} className="mt-12 pt-8 border-t border-[var(--color-line)] opacity-30">
         <div className="flex flex-col gap-1 font-mono text-[8px] uppercase tracking-widest">
           <span>// System Ready</span>
           <span>// Awaiting Physiological Inputs</span>
           <span>// Data will remain local to your session</span>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
