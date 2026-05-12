@@ -334,7 +334,6 @@ export default function App() {
           <div className="flex gap-6 text-xs text-[var(--color-muted)]/50">
             <button onClick={() => setView('how-it-works')} className="hover:text-[var(--color-ink)] transition-colors cursor-pointer text-[var(--color-muted)]/70">How it works</button>
             <button onClick={() => setView('privacy')} className="hover:text-[var(--color-ink)] transition-colors cursor-pointer text-[var(--color-muted)]/70">Privacy</button>
-            <span className="cursor-default text-[var(--color-muted)]/70">Made with <span className="text-[var(--color-accent)]">✦</span></span>
           </div>
         </div>
       </footer>
