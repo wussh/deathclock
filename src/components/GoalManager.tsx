@@ -64,7 +64,8 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
             <div className="inline-block border border-[var(--color-line)] bg-[var(--color-card)] px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] tracking-wider">
               Phase 02: Allocation
             </div>
-            <h3 className="text-3xl font-bold tracking-tight">Aspiration Mapping</h3>
+            <h3 className="text-3xl font-bold tracking-tight">Now let's do something about it.</h3>
+            <p className="text-sm text-[var(--color-muted)] mt-2">What's the one thing you keep putting off?</p>
           </div>
 
           <form onSubmit={handleAddGoal} className="space-y-6 glass-card p-6">
@@ -72,7 +73,7 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
               <label className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50">Intention</label>
               <input
                 type="text"
-                placeholder="e.g. Master piano"
+                placeholder="Learn piano, write a novel, start a business, get fit..."
                 value={newGoal.title}
                 onChange={e => setNewGoal({ ...newGoal, title: e.target.value })}
                 className="input-field"
@@ -119,7 +120,7 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
           <div className="glass-card p-5 space-y-4 bg-gradient-to-br from-[var(--color-card)] to-transparent">
             <div className="flex justify-between items-end">
               <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Committed Capacity</span>
-              <span className="text-2xl font-mono font-extrabold text-[var(--color-ink)]">{percentageOfLife.toFixed(2)}%</span>
+              <span className="text-2xl font-mono font-medium text-[var(--color-ink)]">{percentageOfLife.toFixed(2)}%</span>
             </div>
             <div className="h-2 bg-[var(--color-line)] w-full overflow-hidden rounded-full">
                <motion.div 
@@ -204,7 +205,7 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
             <h4 className="text-2xl font-bold tracking-tight">{goal.title}</h4>
           </div>
           <div className="text-right flex flex-col items-end gap-1">
-             <div className="text-2xl font-mono font-extrabold text-[var(--color-accent)]">{costPercentage.toFixed(2)}%</div>
+             <div className="text-2xl font-mono font-medium text-[var(--color-accent)]">{costPercentage.toFixed(2)}%</div>
              <div className="font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest">Life Cost</div>
           </div>
         </div>
@@ -249,7 +250,7 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
                     </div>
                     <div className="space-y-3">
                        <h5 className="font-mono text-[10px] uppercase tracking-widest font-bold text-[var(--color-muted)]">The Rationale</h5>
-                       <p className="text-sm text-[var(--color-ink)]/80 italic leading-relaxed bg-[var(--color-card)] p-4 rounded-lg border border-[var(--color-line)]">
+                       <p className="text-sm text-[var(--color-ink)]/80 italic leading-relaxed bg-[var(--color-card)] p-4 rounded-[12px] border border-[var(--color-line)]">
                          {insight.rationale}
                        </p>
                     </div>
@@ -258,7 +259,7 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
                   <div className="flex justify-end pt-4 border-t border-[var(--color-line)]/50 mt-4">
                     <button 
                       onClick={(e) => { e.stopPropagation(); onRemove(); }}
-                      className="flex items-center gap-2 text-sm text-[var(--color-muted)] hover:text-red-500 transition-colors hover:bg-red-500/10 px-4 py-2 rounded-lg"
+                      className="flex items-center gap-2 text-sm text-[var(--color-muted)] hover:text-red-500 transition-colors hover:bg-red-500/10 px-4 py-2 rounded-[8px]"
                     >
                       <Trash2 size={16} /> Remove Goal
                     </button>

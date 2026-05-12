@@ -78,30 +78,30 @@ export default function InputForm({ onComplete }: InputFormProps) {
       className="max-w-2xl mx-auto py-12 px-4"
     >
       <motion.div variants={itemVariants} className="mb-12 space-y-4 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">Calculation of Persistence</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">Let's make it personal.</h1>
         <p className="text-sm text-[var(--color-muted)] font-mono">
-          First step to immortality is accurately measuring your mortality.
+          These numbers only mean something if they're honest. No one's watching.
         </p>
       </motion.div>
 
       <form onSubmit={handleSubmit} className="space-y-10 glass-card p-6 md:p-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <InputField 
-            label="Current Age" 
+            label="I am (years old)" 
             value={data.age} 
             onChange={(age) => setData({ ...data, age })} 
             icon={User}
             itemVariants={itemVariants}
           />
           <InputField 
-            label="Expected Lifespan" 
+            label="I expect to live (years)" 
             value={data.expectedAge} 
             onChange={(expectedAge) => setData({ ...data, expectedAge })} 
             icon={Heart}
             itemVariants={itemVariants}
           />
           <InputField 
-            label="Sleep (Hours/Day)" 
+            label="I sleep about (hours a night)" 
             value={data.sleepHours} 
             onChange={(sleepHours) => setData({ ...data, sleepHours })} 
             icon={Bed} 
@@ -109,29 +109,24 @@ export default function InputForm({ onComplete }: InputFormProps) {
             itemVariants={itemVariants}
           />
           <InputField 
-            label="Work (Hours/Day)" 
+            label="I work around (hours a day)" 
             value={data.workHours} 
             onChange={(workHours) => setData({ ...data, workHours })} 
             icon={Briefcase} 
             max={24}
             itemVariants={itemVariants}
           />
-          <InputField 
-            label="Social (Hours/Day)" 
-            value={data.socialHours} 
-            onChange={(socialHours) => setData({ ...data, socialHours })} 
-            icon={Users} 
-            max={24}
-            itemVariants={itemVariants}
-          />
-          <InputField 
-            label="Leisure (Hours/Day)" 
-            value={data.leisureHours} 
-            onChange={(leisureHours) => setData({ ...data, leisureHours })} 
-            icon={Heart} 
-            max={24}
-            itemVariants={itemVariants}
-          />
+          <div className="md:col-span-2">
+            <InputField 
+              label="I spend about (hours on my phone daily)" 
+              value={data.socialHours} 
+              onChange={(socialHours) => setData({ ...data, socialHours })} 
+              icon={Users} 
+              max={24}
+              itemVariants={itemVariants}
+            />
+            <p className="text-[10px] text-[var(--color-muted)] font-mono uppercase tracking-widest mt-2 ml-1 opacity-70">(be honest with this one)</p>
+          </div>
         </div>
 
         <motion.div variants={itemVariants} className="pt-4">
@@ -139,7 +134,7 @@ export default function InputForm({ onComplete }: InputFormProps) {
             type="submit"
             className="btn-primary w-full group"
           >
-            <span className="font-mono text-xs uppercase tracking-[0.2em] font-semibold">Generate Life Dashboard</span>
+            <span className="font-mono text-xs uppercase tracking-[0.2em] font-semibold">Show me the truth</span>
             <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
           </button>
         </motion.div>

@@ -12,6 +12,13 @@ export default function SwapCalculator() {
   const [isLoading, setIsLoading] = useState(false);
   const [actionPlan, setActionPlan] = useState<string[] | null>(null);
   const [isPlanLoading, setIsPlanLoading] = useState(false);
+  const [savedSwaps, setSavedSwaps] = useState<{
+    id: string;
+    activity: string;
+    minutes: number;
+    hoursYear: number;
+    insight: SwapInsight;
+  }[]>([]);
 
   const hoursPerYear = (minutesSavedDaily / 60) * 365.25;
 
@@ -24,6 +31,16 @@ export default function SwapCalculator() {
     try {
       const result = await analyzeSwap(hoursPerYear, activity);
       setInsight(result);
+      setSavedSwaps(prev => [
+        {
+          id: Math.random().toString(36).substring(7),
+          activity,
+          minutes: minutesSavedDaily,
+          hoursYear: hoursPerYear,
+          insight: result
+        },
+        ...prev
+      ]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -80,7 +97,7 @@ export default function SwapCalculator() {
               step="5"
               value={minutesSavedDaily}
               onChange={e => setMinutesSavedDaily(Number(e.target.value))}
-              className="w-full h-2 bg-[var(--color-line)] rounded-lg appearance-none cursor-pointer accent-[var(--color-accent)]"
+              className="w-full h-2 bg-[var(--color-line)] rounded-[8px] appearance-none cursor-pointer accent-[var(--color-accent)]"
             />
             <div className="flex justify-between font-mono text-[10px] opacity-40 uppercase">
               <span>5 mins</span>
@@ -124,7 +141,7 @@ export default function SwapCalculator() {
                 <div className="space-y-6 relative z-10">
                   <div className="space-y-2">
                     <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Annual Recovery</div>
-                    <div className="text-5xl font-mono font-black tracking-tighter text-[var(--color-ink)]">
+                    <div className="text-5xl font-mono font-medium tracking-tighter text-[var(--color-ink)]">
                       +{formatNumber(hoursPerYear)} <span className="text-xl text-[var(--color-muted)] font-bold">hours</span>
                     </div>
                   </div>
@@ -145,10 +162,10 @@ export default function SwapCalculator() {
                     <button
                       onClick={handleGetPlan}
                       disabled={isPlanLoading}
-                      className="w-full bg-[var(--color-accent)] text-amber-950 p-4 flex items-center justify-center gap-2 hover:bg-[var(--color-accent)]/80 transition-all font-mono text-xs uppercase tracking-widest font-bold disabled:opacity-50 !mt-8 shadow-[0_0_20px_rgba(245,158,11,0.3)] animate-pulse hover:animate-none"
+                      className="w-full bg-[var(--color-accent)] text-amber-950 p-4 flex items-center justify-center gap-2 hover:bg-[var(--color-accent)]/80 transition-all font-sans text-sm font-semibold disabled:opacity-50 !mt-8 shadow-[0_0_20px_rgba(186,117,23,0.3)] animate-pulse hover:animate-none rounded-[8px]"
                     >
                       {isPlanLoading ? <Loader2 className="animate-spin" size={16} /> : <Sparkles size={16} />}
-                      Get AI Action Plan
+                      Get my 30-day action plan ✦
                     </button>
                   ) : (
                     <motion.div 
@@ -161,7 +178,7 @@ export default function SwapCalculator() {
                       </div>
                       <div className="space-y-3">
                         {actionPlan.map((step, idx) => (
-                          <div key={idx} className="flex gap-3 text-sm text-[var(--color-ink)]/90 bg-[var(--color-card)] p-3 rounded-lg border border-[var(--color-line)]">
+                          <div key={idx} className="flex gap-3 text-sm text-[var(--color-ink)]/90 bg-[var(--color-card)] p-3 rounded-[12px] border border-[var(--color-line)]">
                             <span className="text-[var(--color-accent)] font-mono text-xs opacity-70 mt-0.5">W{idx + 1}</span>
                             <p>{step}</p>
                           </div>
@@ -175,6 +192,37 @@ export default function SwapCalculator() {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* History section */}
+      {savedSwaps.length > 0 && (
+        <div className="mt-12 space-y-4">
+          <div className="flex items-center gap-2 text-[var(--color-muted)]">
+            <Sparkles size={16} />
+            <h4 className="font-mono text-sm uppercase tracking-widest font-bold">Swap History</h4>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {savedSwaps.map((swap) => (
+              <div key={swap.id} className="glass-card p-5 space-y-4 border-l-2 border-l-[var(--color-accent)] opacity-80 hover:opacity-100 transition-opacity">
+                 <div className="flex justify-between items-start">
+                   <div>
+                     <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Reduced Activity</div>
+                     <div className="font-medium">{swap.activity}</div>
+                   </div>
+                   <div className="text-right">
+                     <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Saved/Day</div>
+                     <div className="font-bold text-[var(--color-accent)]">{swap.minutes}m</div>
+                   </div>
+                 </div>
+                 <div className="h-px w-full bg-[var(--color-line)]" />
+                 <div>
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Potential</div>
+                    <div className="font-medium text-sm text-[var(--color-ink)] mt-1">{swap.insight.achievableGoal}</div>
+                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -142,15 +142,46 @@ export default function LifeClock({ userData }: LifeClockProps) {
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
   };
 
+  const getRealityCheck = () => {
+    if (stats.freeRemainingHours > 80000) {
+      return (
+        <span className="italic">
+          "You have more time than you think. The question isn't whether you have time — it's what you're choosing to do with it."
+        </span>
+      );
+    }
+    if (stats.freeRemainingHours >= 40000) {
+      return (
+        <span className="italic">
+          "You have <span className="font-bold text-[var(--color-accent)] font-mono text-base">{formatNumber(stats.freeRemainingHours)}</span> free hours left — roughly {(stats.freeRemainingHours / (24*365.25)).toFixed(1)} years of real choice. That sounds like a lot. It isn't."
+        </span>
+      );
+    }
+    return (
+      <span className="italic">
+        "Every hour from here matters more than the last. You already know this. Now you can see it."
+      </span>
+    );
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="relative aspect-square max-w-[400px] mx-auto w-full glass-card flex items-center justify-center p-8 bg-[var(--color-card)]/50"
-      >
-        <svg ref={svgRef} className="w-full h-full drop-shadow-2xl opacity-90" />
+      <div className="flex justify-center w-full relative">
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="absolute -top-12 text-center text-lg text-[var(--color-muted)] italic font-light w-full"
+        >
+          "Here's your life, in numbers."
+        </motion.p>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="relative aspect-square max-w-[400px] mx-auto w-full glass-card flex items-center justify-center p-8 bg-[var(--color-card)]/50 mt-4"
+        >
+          <svg ref={svgRef} className="w-full h-full drop-shadow-2xl opacity-90" />
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <motion.span 
             initial={{ opacity: 0 }}
@@ -164,7 +195,7 @@ export default function LifeClock({ userData }: LifeClockProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, type: "spring" }}
-            className="text-4xl font-mono font-extrabold tracking-tight mt-1"
+            className="text-4xl font-mono font-medium tracking-tight mt-1"
           >
             {formatNumber(stats.totalRemainingHours)}
           </motion.span>
@@ -178,6 +209,7 @@ export default function LifeClock({ userData }: LifeClockProps) {
           </motion.span>
         </div>
       </motion.div>
+      </div>
 
       <motion.div 
         variants={containerVariants}
@@ -228,8 +260,14 @@ export default function LifeClock({ userData }: LifeClockProps) {
         </div>
         
         <motion.div variants={itemVariants} className="glass-card p-5 border-l-4 border-l-[var(--color-accent)] bg-gradient-to-br from-[var(--color-accent)]/10 to-transparent">
-           <p className="text-sm text-white/90 leading-relaxed italic">
-            "You have <span className="font-bold text-[var(--color-accent)] font-mono text-base">{formatNumber(stats.freeRemainingHours)} hours</span> of true freedom left. Every hour you spend on distractions is a withdrawal from a finite bank account."
+           <p className="text-sm text-[var(--color-ink)]/90 leading-relaxed">
+             {getRealityCheck()}
+           </p>
+        </motion.div>
+        
+        <motion.div variants={itemVariants} className="glass-card p-5 border-l-4 border-l-[#f97316]/50 bg-gradient-to-br from-[#f97316]/10 to-transparent">
+           <p className="text-sm text-[var(--color-ink)]/90 leading-relaxed italic">
+             "You'll spend <span className="font-mono text-[#f97316] font-bold">{((userData.socialHours * 365.25 * stats.yearsRemaining) / (24 * 365.25)).toFixed(1)} years</span> of that scrolling. That's <span className="font-mono font-bold text-[#f97316]">{formatNumber(userData.socialHours * 365.25 * stats.yearsRemaining)} hours</span> — enough time to learn 3 new languages, write 10 books, or build a company."
            </p>
         </motion.div>
       </motion.div>
@@ -243,15 +281,15 @@ function StatCard({ icon, label, value, sub, highlight, accent, variants }: any)
       variants={variants}
       className={cn(
         "glass-card p-5 transition-all group hover:border-[var(--color-accent)]/40 hover:-translate-y-1 duration-300",
-        highlight && "bg-white/5",
-        accent && "border-[var(--color-accent)]/30 outline outline-1 outline-[var(--color-accent)]/20 shadow-[0_4px_20px_rgba(255,78,0,0.1)]"
+        highlight && "bg-[var(--color-ink)]/5",
+        accent && "border-[var(--color-accent)]/30 outline outline-1 outline-[var(--color-accent)]/20 shadow-[0_4px_20px_rgba(186,117,23,0.1)]"
       )}
     >
       <div className={cn("flex items-center gap-2 mb-3 text-[var(--color-muted)] group-hover:text-[var(--color-ink)] transition-colors", accent && "text-[var(--color-accent)] group-hover:text-[var(--color-accent)]")}>
         {icon}
         <span className="font-medium text-xs uppercase tracking-wider">{label}</span>
       </div>
-      <div className={cn("text-3xl font-mono font-extrabold tracking-tight mb-2", accent && "text-[var(--color-accent)]")}>
+      <div className={cn("text-3xl font-mono font-medium tracking-tight mb-2", accent && "text-[var(--color-accent)]")}>
         {value}
       </div>
       <div className="text-xs text-[var(--color-muted)]">{sub}</div>

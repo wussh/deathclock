@@ -6,18 +6,18 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   --font-serif: "Playfair Display", serif;
   
-  --color-ink: #ffffff;
-  --color-paper: #09090b;
-  --color-card: rgba(255, 255, 255, 0.03);
-  --color-card-hover: rgba(255, 255, 255, 0.06);
-  --color-accent: #f59e0b; /* Amber */
-  --color-line: rgba(255, 255, 255, 0.1);
-  --color-muted: #a1a1aa;
+  --color-ink: #18181b;
+  --color-paper: #ffffff;
+  --color-card: #fafafa;
+  --color-card-hover: #f4f4f5;
+  --color-accent: #ba7517;
+  --color-line: rgba(24, 24, 27, 0.1);
+  --color-muted: #71717a;
 }
 
 @layer base {
   body {
-    @apply bg-[var(--color-paper)] text-[var(--color-ink)] font-sans antialiased selection:bg-[var(--color-accent)] selection:text-white;
+    @apply bg-[var(--color-paper)] text-[var(--color-ink)] font-sans antialiased selection:bg-[var(--color-accent)] selection:text-white font-[400];
   }
 }
 
@@ -30,19 +30,19 @@
   }
   
   .glass-card {
-    @apply bg-[var(--color-card)] border border-[var(--color-line)] backdrop-blur-xl rounded-2xl shadow-2xl;
+    @apply bg-[var(--color-card)] border border-[var(--color-line)] rounded-[12px] shadow-sm;
   }
   
   .input-field {
-    @apply w-full bg-black/40 border border-[var(--color-line)] rounded-xl px-4 py-3 font-mono text-lg focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none transition-all text-[var(--color-ink)];
+    @apply w-full bg-[var(--color-paper)] border border-[var(--color-line)] rounded-[8px] px-4 py-3 font-mono font-medium text-lg focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none transition-all text-[var(--color-ink)] shadow-sm;
   }
 
   .btn-primary {
-    @apply bg-[var(--color-accent)] text-white px-6 py-4 rounded-xl font-medium hover:bg-[#ff6a2b] transition-all duration-300 shadow-[0_0_20px_rgba(255,78,0,0.2)] hover:shadow-[0_0_30px_rgba(255,78,0,0.4)] flex items-center justify-center gap-2;
+    @apply bg-[var(--color-accent)] text-white px-6 py-4 rounded-[8px] font-medium hover:bg-[#a36513] transition-all duration-300 flex items-center justify-center gap-2;
   }
 
   .btn-secondary {
-    @apply bg-[var(--color-card)] border border-[var(--color-line)] text-[var(--color-ink)] px-6 py-4 rounded-xl font-medium hover:bg-[var(--color-card-hover)] transition-all flex items-center justify-center gap-2;
+    @apply bg-[var(--color-card)] border border-[var(--color-line)] text-[var(--color-ink)] px-6 py-4 rounded-[8px] font-medium hover:bg-[var(--color-card-hover)] transition-all flex items-center justify-center gap-2;
   }
 }
 

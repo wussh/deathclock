@@ -66,7 +66,7 @@ export default function ShareModal({ isOpen, onClose, userData, freeHours, goals
                   <div className="space-y-2 pt-4">
                     <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-accent)]">Official Audit</div>
                     <div className="text-3xl font-extrabold tracking-tight leading-snug">
-                      I have exactly <span className="text-[var(--color-accent)] font-mono">{formatNumber(freeHours)} free hours</span> left in my life.
+                      I have exactly <span className="text-[var(--color-accent)]"><span className="font-mono font-medium">{formatNumber(freeHours)}</span> free hours</span> left in my life.
                     </div>
                   </div>
 

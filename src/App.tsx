@@ -32,7 +32,7 @@ export default function App() {
     <div className="min-h-screen mission-control-bg flex flex-col font-sans">
       <header className="border-b border-[var(--color-line)] p-4 flex justify-between items-center bg-[var(--color-paper)]/80 backdrop-blur-md sticky top-0 z-50 transition-all">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[var(--color-accent)] flex items-center justify-center shadow-lg shadow-[var(--color-accent)]/20">
+          <div className="w-8 h-8 rounded-[8px] bg-[var(--color-accent)] flex items-center justify-center shadow-lg shadow-[var(--color-accent)]/20">
             <span className="text-white font-black text-xl">D</span>
           </div>
           <span className="font-bold tracking-tight text-xl">DeathClock<span className="text-[var(--color-muted)]">.ai</span></span>
@@ -83,7 +83,7 @@ export default function App() {
                   transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight leading-tight"
                 >
-                  Time is your only <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-accent)] to-orange-400">true currency.</span>
+                  You keep saying 'someday.'<br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-accent)] to-[#f97316]">Someday is already half over.</span>
                 </motion.h1>
                 <motion.p 
                   initial={{ opacity: 0, y: 20 }}
@@ -91,7 +91,7 @@ export default function App() {
                   transition={{ delay: 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className="text-lg md:text-xl text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed"
                 >
-                  You have roughly <span className="font-mono text-[var(--color-ink)]">24,000</span> hours before your next decade. What will you trade them for?
+                  DeathClock calculates exactly how much free time you have left in your life — and shows you what you're actually doing with it.
                 </motion.p>
               </div>
 
@@ -105,14 +105,24 @@ export default function App() {
                   onClick={() => setView('onboarding')}
                   className="btn-primary text-lg px-8 py-4 sm:px-12 sm:py-5 font-semibold group"
                 >
-                  <span className="relative z-10 transition-transform group-hover:-translate-x-1">Measure Your Mortality</span>
-                  <Activity size={20} className="relative z-10 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  <span className="relative z-10 transition-transform group-hover:-translate-x-1">Calculate my time</span>
+                  <ArrowRight size={20} className="relative z-10 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                 </button>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full max-w-4xl mx-auto pt-8">
-                  <Feature title="Life Visualization" desc="A real-time inventory of your remaining conscious hours." icon={<Clock size={20} />} />
-                  <Feature title="Goal Mapping" desc="AI estimates the cost of your dreams in units of life." icon={<Map size={20} />} />
-                  <Feature title="Reality Engine" desc="Cold, hard data to break the cycle of later." icon={<Activity size={20} />} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left w-full max-w-4xl mx-auto pt-24 mt-12 border-t border-[var(--color-line)]/50">
+                   <div className="md:col-span-2 glass-card p-8 border-l-4 border-l-[var(--color-accent)]">
+                      <div className="text-6xl font-mono font-medium tracking-tight text-[var(--color-ink)] mb-4">7 years</div>
+                      <h3 className="text-xl font-bold mb-2">The average person spends 7 years of their life on social media.</h3>
+                      <p className="text-[var(--color-muted)] text-lg">That's not a metaphor. That's 61,320 hours you could have spent on anything else.</p>
+                   </div>
+                   <div className="glass-card p-8">
+                      <div className="text-4xl font-mono font-medium tracking-tight text-[var(--color-ink)] mb-4">43%</div>
+                      <p className="text-[var(--color-muted)] text-lg">of people feel they don't have time for things that matter to them.</p>
+                   </div>
+                   <div className="glass-card p-8 border-l-4 border-l-[#f97316]/50">
+                      <div className="text-4xl font-mono font-medium tracking-tight text-[var(--color-ink)] mb-4">90%</div>
+                      <p className="text-[var(--color-muted)] text-lg">of people aged 18–35 say they have goals they haven't started yet.</p>
+                   </div>
                 </div>
               </motion.div>
             </motion.section>
@@ -251,7 +261,7 @@ export default function App() {
 function Feature({ title, desc, icon }: any) {
   return (
     <div className="glass-card p-6 flex flex-col gap-3 hover:border-[var(--color-accent)]/50 transition-colors group">
-      <div className="w-10 h-10 rounded-lg bg-[var(--color-card-hover)] flex items-center justify-center text-[var(--color-accent)] group-hover:scale-110 transition-transform">
+      <div className="w-10 h-10 rounded-[8px] bg-[var(--color-card-hover)] flex items-center justify-center text-[var(--color-accent)] group-hover:scale-110 transition-transform">
         {icon}
       </div>
       <h3 className="font-semibold text-lg">{title}</h3>
