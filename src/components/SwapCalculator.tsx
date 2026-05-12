@@ -8,7 +8,12 @@ import { formatNumber } from '../lib/utils';
 export default function SwapCalculator() {
   const [activity, setActivity] = useState('');
   const [minutesSavedDaily, setMinutesSavedDaily] = useState<number>(30);
-  const [insight, setInsight] = useState<SwapInsight | null>(null);
+  const [activeResult, setActiveResult] = useState<{
+    activity: string;
+    minutes: number;
+    hoursYear: number;
+    insight: SwapInsight;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [actionPlan, setActionPlan] = useState<string[] | null>(null);
   const [isPlanLoading, setIsPlanLoading] = useState(false);
@@ -30,14 +35,17 @@ export default function SwapCalculator() {
     setActionPlan(null); // Reset when calculating new
     try {
       const result = await analyzeSwap(hoursPerYear, activity);
-      setInsight(result);
+      const newResult = {
+        activity,
+        minutes: minutesSavedDaily,
+        hoursYear: hoursPerYear,
+        insight: result
+      };
+      setActiveResult(newResult);
       setSavedSwaps(prev => [
         {
           id: Math.random().toString(36).substring(7),
-          activity,
-          minutes: minutesSavedDaily,
-          hoursYear: hoursPerYear,
-          insight: result
+          ...newResult
         },
         ...prev
       ]);
@@ -49,10 +57,10 @@ export default function SwapCalculator() {
   };
 
   const handleGetPlan = async () => {
-    if (!insight) return;
+    if (!activeResult) return;
     setIsPlanLoading(true);
     try {
-      const plan = await generateActionPlan(insight.achievableGoal, hoursPerYear);
+      const plan = await generateActionPlan(activeResult.insight.achievableGoal, activeResult.hoursYear);
       setActionPlan(plan);
     } catch (error) {
       console.error(error);
@@ -116,7 +124,7 @@ export default function SwapCalculator() {
 
         <div className="relative">
           <AnimatePresence mode="wait">
-            {!insight ? (
+            {!activeResult ? (
               <motion.div
                 key="empty"
                 initial={{ opacity: 0 }}
@@ -142,7 +150,7 @@ export default function SwapCalculator() {
                   <div className="space-y-2">
                     <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Annual Recovery</div>
                     <div className="text-5xl font-mono font-medium tracking-tighter text-[var(--color-ink)]">
-                      +{formatNumber(hoursPerYear)} <span className="text-xl text-[var(--color-muted)] font-bold">hours</span>
+                      +{formatNumber(activeResult.hoursYear)} <span className="text-xl text-[var(--color-muted)] font-bold">hours</span>
                     </div>
                   </div>
                   
@@ -151,10 +159,10 @@ export default function SwapCalculator() {
                   <div className="space-y-4">
                     <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Potential Achievement</div>
                     <div className="text-2xl font-bold leading-tight text-[var(--color-accent)]">
-                      {insight.achievableGoal}
+                      {activeResult.insight.achievableGoal}
                     </div>
                     <div className="text-sm text-[var(--color-muted)] leading-relaxed italic border-l-2 border-[var(--color-line)] pl-4">
-                      "{insight.commentary}"
+                      "{activeResult.insight.commentary}"
                     </div>
                   </div>
 

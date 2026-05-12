@@ -1,48 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { UserData } from '../types';
-import { cn } from '../lib/utils';
-import { ArrowRight, User, Bed, Briefcase, Heart, Users } from 'lucide-react';
-import { motion } from 'motion/react';
+import { ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface InputFormProps {
   onComplete: (data: UserData) => void;
 }
 
-const InputField = ({ 
-  label, 
-  value, 
-  onChange, 
-  icon: Icon, 
-  min = 0, 
-  max = 120,
-  itemVariants 
-}: { 
-  label: string, 
-  value: number, 
-  onChange: (v: number) => void, 
-  icon: any,
-  min?: number,
-  max?: number,
-  itemVariants?: any
-}) => (
-  <motion.div variants={itemVariants} className="space-y-2 group">
-    <div className="flex items-center gap-2 text-[var(--color-muted)] font-mono text-[10px] uppercase tracking-widest transition-colors group-focus-within:text-[var(--color-accent)]">
-      <Icon size={14} />
-      <span>{label}</span>
-    </div>
-    <input
-      type="number"
-      value={value}
-      onChange={(e) => onChange(Number(e.target.value))}
-      min={min}
-      max={max}
-      className="input-field"
-    />
-  </motion.div>
-);
-
 export default function InputForm({ onComplete }: InputFormProps) {
-  const [data, setData] = React.useState<UserData>({
+  const [data, setData] = useState<UserData>({
     age: 28,
     expectedAge: 85,
     sleepHours: 8,
@@ -51,101 +17,147 @@ export default function InputForm({ onComplete }: InputFormProps) {
     socialHours: 2,
     hobbies: [],
   });
+  const [step, setStep] = useState(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onComplete(data);
-  };
+  const questions = [
+    { 
+      key: 'age', 
+      text: "I am", 
+      suffix: "years old",
+      getMicroCopy: (v: number) => ""
+    },
+    { 
+      key: 'expectedAge', 
+      text: "I expect to live to", 
+      suffix: "years",
+      getMicroCopy: (v: number) => ""
+    },
+    { 
+      key: 'sleepHours', 
+      text: "I sleep about", 
+      suffix: "hours a night",
+      getMicroCopy: (v: number) => v < 6 ? "Are you resting enough to enjoy the time you have?" : v > 8 ? "That's more than a third of your life in bed." : "That's about a third of your life."
+    },
+    { 
+      key: 'workHours', 
+      text: "I work around", 
+      suffix: "hours a day",
+      getMicroCopy: (v: number) => v >= 10 ? "Make sure what you're working for is worth it." : v >= 8 ? "A massive chunk of your waking hours." : "Time well spent?"
+    },
+    { 
+      key: 'socialHours', 
+      text: "I spend about", 
+      suffix: "hours on my phone daily",
+      getMicroCopy: (v: number) => v >= 4 ? `That's ${Math.floor((v * 365) / 24)} full days completely lost every year.` : v > 0 ? "That time adds up faster than you think." : "Protecting your attention, good."
+    }
+  ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
+  const handleNext = () => {
+    if (step < questions.length) {
+      setStep(step + 1);
     }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (idx === step) {
+        handleNext();
+      }
+    }
   };
 
+  const handleSubmit = () => {
+    onComplete(data);
+  };
+
+  // Auto-scroll to bottom of page when stepping
+  useEffect(() => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
+  }, [step]);
+
   return (
-    <motion.div 
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-      className="max-w-2xl mx-auto py-12 px-4"
-    >
-      <motion.div variants={itemVariants} className="mb-12 space-y-4 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">Let's make it personal.</h1>
-        <p className="text-sm text-[var(--color-muted)] font-mono">
-          These numbers only mean something if they're honest. No one's watching.
-        </p>
-      </motion.div>
+    <div className="max-w-3xl mx-auto py-12 px-4 min-h-[70vh] flex flex-col justify-center">
+      <div className="space-y-16 py-12">
+        {questions.map((q, idx) => {
+          const isActive = step === idx;
+          const isPast = step > idx;
+          
+          if (!isActive && !isPast) return null;
 
-      <form onSubmit={handleSubmit} className="space-y-10 glass-card p-6 md:p-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <InputField 
-            label="I am (years old)" 
-            value={data.age} 
-            onChange={(age) => setData({ ...data, age })} 
-            icon={User}
-            itemVariants={itemVariants}
-          />
-          <InputField 
-            label="I expect to live (years)" 
-            value={data.expectedAge} 
-            onChange={(expectedAge) => setData({ ...data, expectedAge })} 
-            icon={Heart}
-            itemVariants={itemVariants}
-          />
-          <InputField 
-            label="I sleep about (hours a night)" 
-            value={data.sleepHours} 
-            onChange={(sleepHours) => setData({ ...data, sleepHours })} 
-            icon={Bed} 
-            max={24}
-            itemVariants={itemVariants}
-          />
-          <InputField 
-            label="I work around (hours a day)" 
-            value={data.workHours} 
-            onChange={(workHours) => setData({ ...data, workHours })} 
-            icon={Briefcase} 
-            max={24}
-            itemVariants={itemVariants}
-          />
-          <div className="md:col-span-2">
-            <InputField 
-              label="I spend about (hours on my phone daily)" 
-              value={data.socialHours} 
-              onChange={(socialHours) => setData({ ...data, socialHours })} 
-              icon={Users} 
-              max={24}
-              itemVariants={itemVariants}
-            />
-            <p className="text-[10px] text-[var(--color-muted)] font-mono uppercase tracking-widest mt-2 ml-1 opacity-70">(be honest with this one)</p>
-          </div>
-        </div>
+          return (
+            <motion.div 
+              key={q.key}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isActive ? 1 : 0.4, y: 0 }}
+              className="flex flex-col items-center justify-center gap-2 group"
+            >
+              <div className="flex items-center flex-wrap justify-center gap-x-4 gap-y-2 text-2xl md:text-4xl text-[var(--color-muted)] transition-opacity">
+                <span>{q.text}</span>
+                <input 
+                  type="number"
+                  autoFocus={isActive}
+                  value={data[q.key as keyof UserData] as number || ''}
+                  onChange={(e) => setData({ ...data, [q.key]: Number(e.target.value) })}
+                  onKeyDown={(e) => handleKeyDown(e, idx)}
+                  onClick={() => setStep(idx)}
+                  className="bg-transparent border-b-2 border-transparent focus:border-[var(--color-accent)] outline-none text-4xl md:text-5xl font-extrabold text-center w-24 md:w-32 text-[var(--color-ink)] transition-colors cursor-pointer group-hover:border-[var(--color-line)] focus:cursor-text"
+                  min={0}
+                />
+                <span>{q.suffix}.</span>
+              </div>
+              
+              <AnimatePresence>
+                {isActive && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="flex flex-col items-center gap-2 mt-4"
+                  >
+                    {q.getMicroCopy(data[q.key as keyof UserData] as number) && (
+                      <span className="text-sm font-mono text-[var(--color-muted)] italic">
+                        "{q.getMicroCopy(data[q.key as keyof UserData] as number)}"
+                      </span>
+                    )}
+                    <button 
+                      onClick={handleNext}
+                      className="mt-4 font-mono text-[10px] uppercase tracking-widest text-[var(--color-ink)] border border-[var(--color-line)] px-4 py-2 rounded-full hover:bg-[var(--color-card-hover)] transition-colors"
+                    >
+                      Press Enter ↵
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
 
-        <motion.div variants={itemVariants} className="pt-4">
-          <button
-            type="submit"
-            className="btn-primary w-full group"
-          >
-            <span className="font-mono text-xs uppercase tracking-[0.2em] font-semibold">Show me the truth</span>
-            <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
-          </button>
-        </motion.div>
-      </form>
-      
-      <motion.div variants={itemVariants} className="mt-8 flex justify-center">
-        <div className="flex flex-col gap-1 font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest text-center">
-          <span>// System Ready</span>
-          <span>// Data will remain local to your session</span>
-        </div>
-      </motion.div>
-    </motion.div>
+        <AnimatePresence>
+          {step === questions.length && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center pt-12 mt-12 border-t border-[var(--color-line)]/50"
+            >
+              <div className="flex flex-col gap-1 font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest text-center mb-6">
+                <span>// Data will remain local to your session</span>
+              </div>
+              
+              <button
+                onClick={handleSubmit}
+                className="btn-primary group px-12 py-5 text-lg shadow-2xl shadow-[var(--color-accent)]/20"
+              >
+                <span className="font-mono text-sm uppercase tracking-[0.2em] font-semibold relative z-10 transition-transform group-hover:-translate-x-1">Show me the truth</span>
+                <ArrowRight className="relative z-10 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" size={20} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }

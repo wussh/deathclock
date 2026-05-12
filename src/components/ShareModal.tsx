@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Copy, Check, Download } from 'lucide-react';
+import { X, Copy, Check, Download, Camera } from 'lucide-react';
 import { UserData, Goal } from '../types';
 import { formatNumber } from '../lib/utils';
+import html2canvas from 'html2canvas';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -14,16 +15,39 @@ interface ShareModalProps {
 
 export default function ShareModal({ isOpen, onClose, userData, freeHours, goals }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   if (!userData) return null;
 
   const topGoal = goals[0]?.title || "doomscrolling";
-  const shareText = `I have exactly ${formatNumber(freeHours)} free hours left in my life.\nI'm spending them on ${topGoal}.\n\nCalculate your mortality at DeathClock.ai`;
+  const shareText = `I have exactly ${formatNumber(freeHours)} free hours left in my life.\nI'm spending them on ${topGoal}.\n\nCalculate your mortality at DeathClock`;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shareText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const downloadImage = async () => {
+    if (!cardRef.current) return;
+    setDownloading(true);
+    try {
+      const canvas = await html2canvas(cardRef.current, {
+        scale: 2,
+        backgroundColor: document.documentElement.classList.contains('dark') ? '#09090b' : '#ffffff',
+        useCORS: true,
+      });
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `deathclock-${userData.age}.png`;
+      a.click();
+    } catch (error) {
+      console.error('Failed to generate image', error);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -51,42 +75,41 @@ export default function ShareModal({ isOpen, onClose, userData, freeHours, goals
                 <X size={20} />
               </button>
 
-              <div id="share-card" className="p-8 pb-12 relative bg-zinc-900 text-zinc-50 border border-zinc-800 rounded-t-xl overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--color-accent)] opacity-10 rounded-bl-full pointer-events-none" />
-                <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-[var(--color-accent)] opacity-5 rounded-tr-full pointer-events-none" />
+              <div ref={cardRef} id="share-card" className="p-8 relative bg-[var(--color-paper)] text-[var(--color-ink)] overflow-hidden flex flex-col justify-between min-h-[500px] border-b border-[var(--color-line)]">
+                {/* Decorative background grid */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-ink) 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
                 
-                <div className="space-y-6 relative z-10">
-                  <div className="flex items-center gap-2 mb-8">
-                    <div className="w-6 h-6 bg-[var(--color-accent)] text-zinc-900 flex items-center justify-center rounded-sm">
-                      <span className="font-black text-xs">D</span>
-                    </div>
-                    <span className="font-black uppercase tracking-widest text-[10px] text-zinc-400">DeathClock.ai</span>
-                  </div>
-
-                  <div className="space-y-2 pt-4">
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-accent)]">Official Audit</div>
-                    <div className="text-3xl font-extrabold tracking-tight leading-snug">
-                      I have exactly <span className="text-[var(--color-accent)]"><span className="font-mono font-medium">{formatNumber(freeHours)}</span> free hours</span> left in my life.
-                    </div>
-                  </div>
-
-                  <div className="h-px w-full bg-zinc-800 my-8" />
-
-                  <div className="space-y-4">
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">And I'm spending them on:</div>
-                    <div className="text-4xl font-black tracking-tight text-white block break-words border-l-4 border-[var(--color-accent)] pl-5 py-2 leading-none">
-                      {topGoal}
-                    </div>
+                <div className="relative z-10 w-full rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-card)]/90 backdrop-blur p-8 shadow-2xl mb-8 flex flex-col items-center flex-grow justify-center">
+                  <div className="w-14 h-14 rounded-xl bg-[var(--color-accent)] flex items-center justify-center mb-6 shadow-lg shadow-[var(--color-accent)]/20">
+                     <span className="text-[var(--color-paper)] font-black text-3xl">D</span>
                   </div>
                   
-                  <div className="pt-8 mt-4 flex justify-between items-end text-zinc-600">
-                    <div className="font-mono text-[9px] uppercase tracking-widest">
-                      Age {userData.age} / Expectancy {userData.expectedAge}
-                    </div>
-                    <div className="font-mono text-[9px] uppercase tracking-widest text-[var(--color-accent)]/80 border border-[var(--color-accent)]/20 px-2 py-1 rounded">
-                      Reality Check: Active
-                    </div>
+                  <h3 className="text-[10px] font-mono text-[var(--color-muted)] uppercase tracking-[0.2em] mb-4 text-center">Notice of Mortality</h3>
+                  <div className="text-6xl sm:text-7xl font-extrabold tracking-tighter mb-2 text-center text-[var(--color-ink)]">
+                    {formatNumber(freeHours)}
                   </div>
+                  <div className="text-xs font-bold text-[var(--color-accent)] mb-8 tracking-[0.2em] uppercase">
+                    Free Hours Left
+                  </div>
+
+                  <div className="w-full bg-[var(--color-paper)] rounded-xl p-5 border border-[var(--color-line)] text-center relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-[var(--color-accent)]" />
+                    <p className="text-[var(--color-muted)] text-[9px] uppercase font-mono mb-2 tracking-widest text-left">Current allocation:</p>
+                    <p className="text-xl sm:text-2xl font-black text-[var(--color-ink)] break-words leading-tight text-left">"{topGoal}"</p>
+                  </div>
+                </div>
+
+                <div className="relative z-10 flex justify-between items-end px-2 w-full mt-auto">
+                   <div className="space-y-1">
+                      <div className="text-[9px] text-[var(--color-muted)] font-mono uppercase tracking-widest">Subject Profile</div>
+                      <div className="text-xs font-mono font-bold text-[var(--color-ink)]">
+                        AGE {userData.age} <span className="opacity-40">/</span> {userData.expectedAge}
+                      </div>
+                   </div>
+                   <div className="text-right space-y-1">
+                      <div className="text-[9px] text-[var(--color-muted)] font-mono uppercase tracking-widest">Generated by</div>
+                      <div className="text-xs font-mono font-bold text-[var(--color-accent)] uppercase tracking-widest">DeathClock</div>
+                   </div>
                 </div>
               </div>
 
@@ -98,6 +121,16 @@ export default function ShareModal({ isOpen, onClose, userData, freeHours, goals
                   {copied ? <Check size={16} /> : <Copy size={16} />}
                   <span className="font-mono text-[10px] uppercase tracking-widest font-bold">
                     {copied ? 'Copied!' : 'Copy Text'}
+                  </span>
+                </button>
+                <button
+                  onClick={downloadImage}
+                  disabled={downloading}
+                  className="flex-1 bg-[var(--color-paper)] text-[var(--color-ink)] p-3 flex items-center justify-center gap-2 hover:bg-[var(--color-accent)] hover:text-white transition-colors disabled:opacity-50"
+                >
+                  <Camera size={16} />
+                  <span className="font-mono text-[10px] uppercase tracking-widest font-bold">
+                    {downloading ? 'Saving...' : 'Save Image'}
                   </span>
                 </button>
               </div>

@@ -1,21 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,300;1,400&family=Inter:wght@300;400;500;600;800&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-serif: "Playfair Display", serif;
-  
-  --color-ink: #18181b;
-  --color-paper: #ffffff;
-  --color-card: #fafafa;
-  --color-card-hover: #f4f4f5;
-  --color-accent: #ba7517;
-  --color-line: rgba(24, 24, 27, 0.1);
-  --color-muted: #71717a;
-}
-
 @layer base {
+  :root {
+    --color-ink: #18181b;
+    --color-paper: #ffffff;
+    --color-card: #fafafa;
+    --color-card-hover: #f4f4f5;
+    --color-accent: #ba7517;
+    --color-line: rgba(24, 24, 27, 0.1);
+    --color-muted: #71717a;
+  }
+
+  .dark {
+    --color-ink: #ffffff;
+    --color-paper: #09090b;
+    --color-card: #141416;
+    --color-card-hover: #1c1c1f;
+    --color-accent: #ba7517;
+    --color-line: rgba(255, 255, 255, 0.1);
+    --color-muted: #a1a1aa;
+  }
+
   body {
     @apply bg-[var(--color-paper)] text-[var(--color-ink)] font-sans antialiased selection:bg-[var(--color-accent)] selection:text-white font-[400];
   }
