@@ -8,7 +8,7 @@ import ShareModal from './components/ShareModal';
 import HowItWorks from './components/HowItWorks';
 import Privacy from './components/Privacy';
 import { motion, AnimatePresence } from 'motion/react';
-import { Share2, Clock, Map, Activity, RefreshCw, ArrowRight, Flame } from 'lucide-react';
+import { Share2, Clock, Map, Activity, RefreshCw, ArrowRight, Flame, Skull } from 'lucide-react';
 
 export default function App() {
   const [userData, setUserData] = React.useState<UserData | null>(null);
@@ -32,6 +32,26 @@ export default function App() {
     }
   }, [view]);
 
+  const headings = React.useMemo(() => [
+    { main: "Time is a candle", sub: "burning at both ends..." },
+    { main: "The flame grows shorter", sub: "with every breath..." },
+    { main: "Your spark is fleeting.", sub: "Do not let it die in the dark..." },
+    { main: "We are all burning,", sub: "some just realize it sooner..." }
+  ], []);
+
+  const subheadings = React.useMemo(() => [
+    "DeathClock reveals the fleeting embers of your free time — and illuminates where you are letting it turn to ash.",
+    "The wax is melting. See how much of your life is left before the inevitable dark.",
+    "A final reckoning. Confront the hours you have left to burn, before they are gone.",
+    "Every second is a grain of ash. Witness what you are truly trading your soul for."
+  ], []);
+
+  const [copyIndex, setCopyIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    setCopyIndex(Math.floor(Math.random() * headings.length));
+  }, [headings.length]);
+
   return (
     <div className="min-h-screen flex flex-col font-sans overflow-hidden bg-black text-[#fcf6e8]">
       {/* Dynamic Candle & Wind Background */}
@@ -42,8 +62,8 @@ export default function App() {
       <div className="relative z-10 flex flex-col min-h-screen">
       <header className="border-b border-[var(--color-line)] p-4 flex justify-between items-center bg-[var(--color-paper)]/30 backdrop-blur-md sticky top-0 z-50 transition-all">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-[8px] bg-[var(--color-accent)] flex items-center justify-center shadow-lg shadow-[var(--color-accent)]/20">
-            <Flame size={20} className="text-white" />
+          <div className="w-8 h-8 rounded-[8px] bg-gradient-to-t from-[#913d0a] to-[#d65f11] flex items-center justify-center shadow-[0_0_15px_rgba(229,106,23,0.3)] border border-[#f08535]/30">
+            <Skull size={18} className="text-[#fcf6e8]" />
           </div>
           <span className="font-bold tracking-tight text-xl">DeathClock</span>
         </div>
@@ -98,7 +118,7 @@ export default function App() {
                   transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                   className="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight leading-tight relative z-10 font-serif"
                 >
-                  Time is a candle<br/><span className="text-transparent bg-clip-text bg-gradient-to-t from-[var(--color-accent-flame)] to-[#f97316]">burning at both ends...</span>
+                  {headings[copyIndex].main}<br/><span className="text-transparent bg-clip-text bg-gradient-to-t from-[var(--color-accent-flame)] to-[#f97316]">{headings[copyIndex].sub}</span>
                 </motion.h1>
                 <motion.p 
                   initial={{ opacity: 0, y: 20 }}
@@ -106,7 +126,7 @@ export default function App() {
                   transition={{ delay: 0.3, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                   className="text-lg md:text-xl text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed relative z-10"
                 >
-                  DeathClock reveals the fleeting embers of your free time — and illuminates where you are letting it turn to ash.
+                  {subheadings[copyIndex]}
                 </motion.p>
                 <motion.div
                   initial={{ opacity: 0, y: 40 }}

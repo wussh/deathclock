@@ -143,25 +143,30 @@ export default function LifeClock({ userData }: LifeClockProps) {
   };
 
   const getRealityCheck = () => {
+    const rIndex = Math.floor(Math.random() * 3);
+
     if (stats.freeRemainingHours > 80000) {
-      return (
-        <span className="italic">
-          "Your flame burns bright and long. The question isn't how much wax remains, but what you choose to illuminate."
-        </span>
-      );
+      const messages = [
+        "Your flame burns bright and long. The question isn't how much wax remains, but what you choose to illuminate.",
+        "You still have mountains of time. Or so it seems. Will you burn it, or build with it?",
+        "A distant horizon. Do not let the illusion of eternity lull you to sleep."
+      ];
+      return <span className="italic">"{messages[rIndex]}"</span>;
     }
     if (stats.freeRemainingHours >= 40000) {
-      return (
-        <span className="italic">
-          "You have <span className="font-bold text-[var(--color-accent)] font-mono text-base">{formatNumber(stats.freeRemainingHours)}</span> hours left — roughly {(stats.freeRemainingHours / (24*365.25)).toFixed(1)} years of choice before the darkness. It sounds like an eternity. It is barely a spark."
-        </span>
-      );
+      const messages = [
+        <>You have <span className="font-bold text-[var(--color-accent)] font-mono text-base">{formatNumber(stats.freeRemainingHours)}</span> hours left — roughly {(stats.freeRemainingHours / (24*365.25)).toFixed(1)} years of choice before the darkness. It sounds like an eternity. It is barely a spark.</>,
+        <>The halfway point. <span className="font-bold text-[var(--color-accent)] font-mono text-base">{formatNumber(stats.freeRemainingHours)}</span> hours remaining. Are you guarding them, or giving them away?</>,
+        <>You'll blink, and <span className="font-bold text-[var(--color-accent)] font-mono text-base">{formatNumber(stats.freeRemainingHours)}</span> hours will be gone. The wick is melting faster than you realize.</>
+      ];
+      return <span className="italic">"{messages[rIndex]}"</span>;
     }
-    return (
-      <span className="italic">
-        "Every hour burns brighter as the wick grows short. You already know this. Now you can watch the embers fade."
-      </span>
-    );
+    const finalMessages = [
+      "Every hour burns brighter as the wick grows short. You already know this. Now you can watch the embers fade.",
+      "The darkness is closing in. There is no time left for things that do not matter.",
+      "Urgency is a gift. Let the remaining warmth guide you to what truly counts."
+    ];
+    return <span className="italic">"{finalMessages[rIndex]}"</span>;
   };
 
   return (
