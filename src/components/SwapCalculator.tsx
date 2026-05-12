@@ -72,18 +72,18 @@ export default function SwapCalculator() {
   return (
     <div id="phase-03" className="space-y-6">
       <div className="space-y-2">
-        <div className="inline-block border border-[var(--color-line)] bg-[var(--color-card)] px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] tracking-wider">
-          Phase 03: Reallocation
+        <div className="inline-block border border-[var(--color-accent)]/30 bg-[#1a110a] px-3 py-1 rounded-full font-mono text-xs text-[var(--color-accent-flame)] tracking-wider">
+          Phase 03: Reignite
         </div>
-        <h3 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <Replace size={24} className="text-[var(--color-accent)]" /> Time Swap
+        <h3 className="text-3xl font-bold tracking-tight flex items-center gap-2 font-serif">
+          <Replace size={24} className="text-[var(--color-accent)]" /> Sacrifice & Salvage
         </h3>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <form onSubmit={handleCalculate} className="space-y-6 glass-card p-6 md:p-8">
           <div className="space-y-2">
-            <label className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50">Low-Priority Activity</label>
+            <label className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50">Ash-Producing Habit</label>
             <input
               type="text"
               placeholder="e.g. Scrolling TikTok, Netflix"
@@ -95,8 +95,8 @@ export default function SwapCalculator() {
 
           <div className="space-y-4 pt-4">
             <label className="font-mono text-[10px] uppercase tracking-[0.2em] flex justify-between">
-              <span className="opacity-50">Reduce by</span>
-              <span className="font-bold text-[var(--color-accent)]">{minutesSavedDaily} mins / day</span>
+              <span className="opacity-50">Starve it by</span>
+              <span className="font-bold text-[var(--color-accent-flame)]">{minutesSavedDaily} mins / day</span>
             </label>
             <input
               type="range"
@@ -118,7 +118,7 @@ export default function SwapCalculator() {
             className="btn-primary w-full disabled:opacity-50 group mt-4"
           >
             {isLoading ? <Loader2 className="animate-spin" size={18} /> : <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
-            <span className="font-mono text-xs uppercase tracking-widest font-bold">Calculate Compound Interest</span>
+            <span className="font-mono text-xs uppercase tracking-widest font-bold">Forecast the Flame</span>
           </button>
         </form>
 
@@ -141,15 +141,15 @@ export default function SwapCalculator() {
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                className="glass-card p-8 h-full flex flex-col justify-center border-l-4 border-l-[var(--color-accent)] relative overflow-hidden"
+                className="glass-card p-8 h-full flex flex-col justify-center border-l-4 border-l-[var(--color-accent)] relative overflow-hidden shadow-[0_0_30px_rgba(229,106,23,0.15)]"
               >
                  <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
                   <Replace size={120} />
                 </div>
                 <div className="space-y-6 relative z-10">
                   <div className="space-y-2">
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Annual Recovery</div>
-                    <div className="text-5xl font-mono font-medium tracking-tighter text-[var(--color-ink)]">
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Sparks Salvaged Annually</div>
+                    <div className="text-5xl font-mono font-medium tracking-tighter text-[var(--color-accent-flame)]">
                       +{formatNumber(activeResult.hoursYear)} <span className="text-xl text-[var(--color-muted)] font-bold">hours</span>
                     </div>
                   </div>
@@ -157,11 +157,12 @@ export default function SwapCalculator() {
                   <div className="h-px w-full bg-[var(--color-line)]" />
                   
                   <div className="space-y-4">
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Potential Achievement</div>
-                    <div className="text-2xl font-bold leading-tight text-[var(--color-accent)]">
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">What Could Burn Instead</div>
+                    <div className="text-2xl font-bold leading-tight text-[var(--color-ink)] font-serif">
                       {activeResult.insight.achievableGoal}
                     </div>
-                    <div className="text-sm text-[var(--color-muted)] leading-relaxed italic border-l-2 border-[var(--color-line)] pl-4">
+                    <div className="text-sm text-[var(--color-muted)] leading-relaxed italic border-l-2 border-[var(--color-accent)] pl-4 font-serif relative">
+                      <div className="absolute top-0 left-0 w-full h-full bg-[var(--color-accent-glow)] opacity-10 blur-md rounded-r-md"></div>
                       "{activeResult.insight.commentary}"
                     </div>
                   </div>
@@ -170,10 +171,10 @@ export default function SwapCalculator() {
                     <button
                       onClick={handleGetPlan}
                       disabled={isPlanLoading}
-                      className="w-full bg-[var(--color-accent)] text-amber-950 p-4 flex items-center justify-center gap-2 hover:bg-[var(--color-accent)]/80 transition-all font-sans text-sm font-semibold disabled:opacity-50 !mt-8 shadow-[0_0_20px_rgba(186,117,23,0.3)] animate-pulse hover:animate-none rounded-[8px]"
+                      className="w-full bg-gradient-to-r from-[var(--color-accent)] to-[#f97316] text-[#150e09] p-4 flex items-center justify-center gap-2 hover:brightness-110 transition-all font-sans text-sm font-bold disabled:opacity-50 !mt-8 shadow-[0_0_20px_rgba(229,106,23,0.3)] animate-pulse hover:animate-none rounded-[8px]"
                     >
                       {isPlanLoading ? <Loader2 className="animate-spin" size={16} /> : <Sparkles size={16} />}
-                      Get my 30-day action plan ✦
+                      Ignite 30-Day Protocol ✦
                     </button>
                   ) : (
                     <motion.div 
@@ -205,26 +206,26 @@ export default function SwapCalculator() {
       {savedSwaps.length > 0 && (
         <div className="mt-12 space-y-4">
           <div className="flex items-center gap-2 text-[var(--color-muted)]">
-            <Sparkles size={16} />
-            <h4 className="font-mono text-sm uppercase tracking-widest font-bold">Swap History</h4>
+            <Sparkles size={16} className="text-[var(--color-accent-flame)]" />
+            <h4 className="font-mono text-sm uppercase tracking-widest font-bold text-[var(--color-accent-flame)]">Embers Saved</h4>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {savedSwaps.map((swap) => (
               <div key={swap.id} className="glass-card p-5 space-y-4 border-l-2 border-l-[var(--color-accent)] opacity-80 hover:opacity-100 transition-opacity">
                  <div className="flex justify-between items-start">
                    <div>
-                     <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Reduced Activity</div>
-                     <div className="font-medium">{swap.activity}</div>
+                     <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Starved Habit</div>
+                     <div className="font-medium text-[var(--color-ink)]">{swap.activity}</div>
                    </div>
                    <div className="text-right">
                      <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Saved/Day</div>
-                     <div className="font-bold text-[var(--color-accent)]">{swap.minutes}m</div>
+                     <div className="font-bold text-[var(--color-accent-flame)]">{swap.minutes}m</div>
                    </div>
                  </div>
                  <div className="h-px w-full bg-[var(--color-line)]" />
                  <div>
                     <div className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Potential</div>
-                    <div className="font-medium text-sm text-[var(--color-ink)] mt-1">{swap.insight.achievableGoal}</div>
+                    <div className="font-medium text-sm text-[var(--color-ink)] mt-1 font-serif">{swap.insight.achievableGoal}</div>
                  </div>
               </div>
             ))}

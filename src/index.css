@@ -3,52 +3,75 @@
 
 @layer base {
   :root {
-    --color-ink: #18181b;
-    --color-paper: #ffffff;
-    --color-card: #fafafa;
-    --color-card-hover: #f4f4f5;
-    --color-accent: #ba7517;
-    --color-line: rgba(24, 24, 27, 0.1);
-    --color-muted: #71717a;
+    --color-ink: #fcf6e8;
+    --color-paper: #0b0704;
+    --color-card: #150e09;
+    --color-card-hover: #1f140c;
+    --color-accent: #e56a17;
+    --color-accent-glow: rgba(229, 106, 23, 0.4);
+    --color-accent-flame: #ffb04f;
+    --color-line: rgba(229, 106, 23, 0.15);
+    --color-muted: #a38a75;
   }
 
   .dark {
-    --color-ink: #ffffff;
-    --color-paper: #09090b;
-    --color-card: #141416;
-    --color-card-hover: #1c1c1f;
-    --color-accent: #ba7517;
-    --color-line: rgba(255, 255, 255, 0.1);
-    --color-muted: #a1a1aa;
+    --color-ink: #fcf6e8;
+    --color-paper: #0b0704;
+    --color-card: #150e09;
+    --color-card-hover: #1f140c;
+    --color-accent: #e56a17;
+    --color-accent-glow: rgba(229, 106, 23, 0.4);
+    --color-accent-flame: #ffb04f;
+    --color-line: rgba(229, 106, 23, 0.15);
+    --color-muted: #a38a75;
   }
 
   body {
-    @apply bg-[var(--color-paper)] text-[var(--color-ink)] font-sans antialiased selection:bg-[var(--color-accent)] selection:text-white font-[400];
+    @apply bg-[var(--color-paper)] text-[var(--color-ink)] font-sans antialiased selection:bg-[var(--color-accent)] selection:text-[var(--color-paper)] font-[400];
   }
 }
 
 @layer components {
   .mission-control-bg {
-    background-image: 
-      radial-gradient(circle at center, var(--color-line) 1px, transparent 1px);
-    background-size: 40px 40px;
-    background-position: -20px -20px;
+    background: radial-gradient(circle at 50% 120%, var(--color-accent-glow) 0%, transparent 60%);
+    position: relative;
+    z-index: 1;
   }
   
   .glass-card {
-    @apply bg-[var(--color-card)] border border-[var(--color-line)] rounded-[12px] shadow-sm;
+    @apply bg-[var(--color-card)]/80 backdrop-blur-md border border-[var(--color-line)] rounded-[12px] shadow-[0_4px_30px_rgba(0,0,0,0.5)];
   }
   
   .input-field {
-    @apply w-full bg-[var(--color-paper)] border border-[var(--color-line)] rounded-[8px] px-4 py-3 font-mono font-medium text-lg focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none transition-all text-[var(--color-ink)] shadow-sm;
+    @apply w-full bg-[#1a110a] border border-[var(--color-line)] rounded-[8px] px-4 py-3 font-mono font-medium text-lg text-[var(--color-accent-flame)] focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] focus:outline-none transition-all shadow-sm;
   }
 
   .btn-primary {
-    @apply bg-[var(--color-accent)] text-white px-6 py-4 rounded-[8px] font-medium hover:bg-[#a36513] transition-all duration-300 flex items-center justify-center gap-2;
+    @apply bg-gradient-to-t from-[#913d0a] to-[#d65f11] text-[#fcf6e8] shadow-[0_0_20px_var(--color-accent-glow)] px-6 py-4 rounded-[8px] font-medium hover:brightness-110 transition-all duration-300 flex items-center justify-center gap-2 border border-[#f08535]/30;
   }
 
   .btn-secondary {
-    @apply bg-[var(--color-card)] border border-[var(--color-line)] text-[var(--color-ink)] px-6 py-4 rounded-[8px] font-medium hover:bg-[var(--color-card-hover)] transition-all flex items-center justify-center gap-2;
+    @apply bg-transparent border border-[var(--color-accent)]/30 text-[var(--color-accent-flame)] px-6 py-4 rounded-[8px] font-medium hover:bg-[var(--color-accent)]/10 hover:shadow-[0_0_15px_var(--color-accent-glow)] transition-all flex items-center justify-center gap-2;
+  }
+  
+  .flame-bg {
+    background: radial-gradient(circle at center, var(--color-accent-flame) 0%, var(--color-accent) 40%, transparent 70%);
+    filter: blur(40px);
+    mix-blend-mode: screen;
+    animation: flicker 4s infinite alternate;
   }
 }
 
+@keyframes flicker {
+  0%   { opacity: 0.7; transform: scale(1) translateY(0px) rotate(-1deg); }
+  25%  { opacity: 0.5; transform: scale(1.05) translateY(-5px) rotate(1deg); }
+  50%  { opacity: 0.8; transform: scale(0.95) translateY(2px) rotate(-2deg); }
+  75%  { opacity: 0.6; transform: scale(1.02) translateY(-2px) rotate(1deg); }
+  100% { opacity: 0.9; transform: scale(0.98) translateY(4px) rotate(0deg); }
+}
+
+@keyframes wind {
+  0% { transform: translateX(0) skewX(0deg); opacity: 0.1; }
+  50% { transform: translateX(20px) skewX(5deg); opacity: 0.3; }
+  100% { transform: translateX(0) skewX(0deg); opacity: 0.1; }
+}

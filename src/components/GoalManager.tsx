@@ -61,14 +61,14 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
           <div className="space-y-2">
-            <div className="inline-block border border-[var(--color-line)] bg-[var(--color-card)] px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] tracking-wider">
-              Phase 02: Allocation
+            <div className="inline-block border border-[var(--color-accent)]/30 bg-[#1a110a] px-3 py-1 rounded-full font-mono text-xs text-[var(--color-accent-flame)] tracking-wider">
+              Phase 02: Kindle the Flame
             </div>
-            <h3 className="text-3xl font-bold tracking-tight">Now let's do something about it.</h3>
-            <p className="text-sm text-[var(--color-muted)] mt-2">What's the one thing you keep putting off?</p>
+            <h3 className="text-3xl font-bold tracking-tight font-serif">What is worth burning for?</h3>
+            <p className="text-sm text-[var(--color-muted)] mt-2 font-serif">Name the dream you've let grow cold.</p>
           </div>
 
-          <form onSubmit={handleAddGoal} className="space-y-6 glass-card p-6">
+          <form onSubmit={handleAddGoal} className="space-y-6 glass-card p-6 border-l-[var(--color-accent)] border-l-2">
             <div className="space-y-2">
               <label className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50">Intention</label>
               <input
@@ -113,24 +113,24 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
               className="btn-primary w-full disabled:opacity-50"
             >
               {isLoading ? <Loader2 className="animate-spin" size={18} /> : <Plus size={18} />}
-              <span className="font-mono text-xs uppercase tracking-widest font-bold">Register Goal</span>
+              <span className="font-mono text-xs uppercase tracking-widest font-bold">Ignite Goal</span>
             </button>
           </form>
 
           <div className="glass-card p-5 space-y-4 bg-gradient-to-br from-[var(--color-card)] to-transparent">
             <div className="flex justify-between items-end">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Committed Capacity</span>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--color-muted)]">Wax Committed</span>
               <span className="text-2xl font-mono font-medium text-[var(--color-ink)]">{percentageOfLife.toFixed(2)}%</span>
             </div>
             <div className="h-2 bg-[var(--color-line)] w-full overflow-hidden rounded-full">
                <motion.div 
                  initial={{ width: 0 }}
                  animate={{ width: `${Math.min(100, percentageOfLife)}%` }}
-                 className="h-full bg-[var(--color-accent)] rounded-full transition-all duration-1000"
+                 className="h-full bg-[var(--color-accent)] rounded-full transition-all duration-1000 shadow-[0_0_10px_var(--color-accent-glow)]"
                />
             </div>
-            <p className="text-[11px] text-[var(--color-muted)] leading-tight italic">
-              Percentage of your remaining free time allocated to these goals.
+            <p className="text-[11px] text-[var(--color-muted)] leading-tight italic font-serif">
+               Percentage of your remaining spark promised to these paths.
             </p>
           </div>
         </div>
@@ -142,10 +142,10 @@ export default function GoalManager({ freeHours, goals, setGoals }: GoalManagerP
                 initial={{ opacity: 0 }} 
                 animate={{ opacity: 1 }} 
                 exit={{ opacity: 0 }}
-                className="h-full flex flex-col items-center justify-center glass-card border-dashed p-12 text-center text-[var(--color-muted)] italic text-sm"
+                className="h-full flex flex-col items-center justify-center glass-card border-dashed p-12 text-center text-[var(--color-muted)] italic text-sm font-serif"
               >
-                <Target size={48} className="mb-4 opacity-50 text-[var(--color-accent)]" />
-                No active goals registered in the system.
+                <Target size={48} className="mb-4 opacity-50 text-[var(--color-accent-flame)]" />
+                No passions registered. Your flame burns without direction.
               </motion.div>
             ) : (
               <div className="space-y-4">
@@ -196,17 +196,17 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
         <div className="flex justify-between items-start mb-4">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-               <span className="font-mono text-[10px] bg-[var(--color-card-hover)] px-2.5 py-1 rounded-full uppercase tracking-widest text-[var(--color-ink)]/70">{goal.category}</span>
+               <span className="font-mono text-[10px] bg-[#1a110a] px-2.5 py-1 rounded-full uppercase tracking-widest text-[var(--color-muted)]">{goal.category}</span>
                <span className={cn("flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest font-semibold", priorityColor)}>
                  <PriorityIcon size={14} /> {goal.priority} priority
                </span>
-               <span className="font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest">{formatNumber(goal.hoursNeeded)} Hours Required</span>
+               <span className="font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest">{formatNumber(goal.hoursNeeded)} Hours to burn</span>
             </div>
-            <h4 className="text-2xl font-bold tracking-tight">{goal.title}</h4>
+            <h4 className="text-2xl font-bold tracking-tight text-[var(--color-ink)]">{goal.title}</h4>
           </div>
           <div className="text-right flex flex-col items-end gap-1">
-             <div className="text-2xl font-mono font-medium text-[var(--color-accent)]">{costPercentage.toFixed(2)}%</div>
-             <div className="font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest">Life Cost</div>
+             <div className="text-2xl font-mono font-medium text-[var(--color-accent-flame)]">{costPercentage.toFixed(2)}%</div>
+             <div className="font-mono text-[10px] text-[var(--color-muted)] uppercase tracking-widest">Ash Cost</div>
           </div>
         </div>
 
@@ -235,22 +235,22 @@ function GoalCard({ goal, insight, freeHours, onRemove }: GoalCardProps) {
                   className="pt-6 mt-4 border-t border-[var(--color-line)] space-y-6 overflow-hidden"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-3">
+                     <div className="space-y-3">
                        <h5 className="font-mono text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 text-[var(--color-muted)]">
-                         <Calendar size={14} className="text-[var(--color-accent)]" /> Strategic Roadmap
+                         <Calendar size={14} className="text-[var(--color-accent-flame)]" /> Path through the Dark
                        </h5>
                        <ul className="space-y-2">
                          {insight.milestones.map((m, i) => (
-                           <li key={i} className="text-sm text-[var(--color-ink)]/90 border-l-2 border-[var(--color-line)] pl-3">
-                             <span className="text-[var(--color-accent)]/50 font-mono text-xs mr-2">[{i+1}]</span>
+                           <li key={i} className="text-sm text-[var(--color-ink)]/90 border-l-2 border-[var(--color-line)] pl-3 font-serif">
+                             <span className="text-[var(--color-accent-flame)] font-mono text-xs mr-2 drop-shadow-[0_0_5px_var(--color-accent-glow)]">[{i+1}]</span>
                              {m}
                            </li>
                          ))}
                        </ul>
                     </div>
                     <div className="space-y-3">
-                       <h5 className="font-mono text-[10px] uppercase tracking-widest font-bold text-[var(--color-muted)]">The Rationale</h5>
-                       <p className="text-sm text-[var(--color-ink)]/80 italic leading-relaxed bg-[var(--color-card)] p-4 rounded-[12px] border border-[var(--color-line)]">
+                       <h5 className="font-mono text-[10px] uppercase tracking-widest font-bold text-[var(--color-muted)]">The Reckoning</h5>
+                       <p className="text-sm text-[var(--color-ink)]/80 italic leading-relaxed bg-[#1a110a] p-4 rounded-[12px] border border-[var(--color-line)] font-serif shadow-inner">
                          {insight.rationale}
                        </p>
                     </div>

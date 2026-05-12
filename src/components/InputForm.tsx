@@ -22,33 +22,33 @@ export default function InputForm({ onComplete }: InputFormProps) {
   const questions = [
     { 
       key: 'age', 
-      text: "I am", 
-      suffix: "years old",
+      text: "I have burned for", 
+      suffix: "years",
       getMicroCopy: (v: number) => ""
     },
     { 
       key: 'expectedAge', 
-      text: "I expect to live to", 
+      text: "I hope to keep the flame alive to", 
       suffix: "years",
       getMicroCopy: (v: number) => ""
     },
     { 
       key: 'sleepHours', 
-      text: "I sleep about", 
-      suffix: "hours a night",
-      getMicroCopy: (v: number) => v < 6 ? "Are you resting enough to enjoy the time you have?" : v > 8 ? "That's more than a third of your life in bed." : "That's about a third of your life."
+      text: "I surrender", 
+      suffix: "hours to the dark each night",
+      getMicroCopy: (v: number) => v < 6 ? "A fragile wick burns faster." : v > 8 ? "Much of your flame is spent in the dark." : "A balanced rest to feed the fire."
     },
     { 
       key: 'workHours', 
-      text: "I work around", 
-      suffix: "hours a day",
-      getMicroCopy: (v: number) => v >= 10 ? "Make sure what you're working for is worth it." : v >= 8 ? "A massive chunk of your waking hours." : "Time well spent?"
+      text: "I sacrifice", 
+      suffix: "hours a day to my labor",
+      getMicroCopy: (v: number) => v >= 10 ? "Are you trading your spark for ash?" : v >= 8 ? "A glowing tribute, but a massive sacrifice." : "Guarding your time deliberately."
     },
     { 
       key: 'socialHours', 
-      text: "I spend about", 
-      suffix: "hours on my phone daily",
-      getMicroCopy: (v: number) => v >= 4 ? `That's ${Math.floor((v * 365) / 24)} full days completely lost every year.` : v > 0 ? "That time adds up faster than you think." : "Protecting your attention, good."
+      text: "I let my attention drift to screens for", 
+      suffix: "hours daily",
+      getMicroCopy: (v: number) => v >= 4 ? `That's ${Math.floor((v * 365) / 24)} days each year scattered to the wind.` : v > 0 ? "Even small drafts steal the heat from your life." : "Fiercely protecting your focus."
     }
   ];
 

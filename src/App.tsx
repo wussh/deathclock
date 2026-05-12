@@ -8,7 +8,7 @@ import ShareModal from './components/ShareModal';
 import HowItWorks from './components/HowItWorks';
 import Privacy from './components/Privacy';
 import { motion, AnimatePresence } from 'motion/react';
-import { Share2, Clock, Map, Activity, RefreshCw, ArrowRight, Moon, Sun } from 'lucide-react';
+import { Share2, Clock, Map, Activity, RefreshCw, ArrowRight, Flame } from 'lucide-react';
 
 export default function App() {
   const [userData, setUserData] = React.useState<UserData | null>(null);
@@ -18,25 +18,7 @@ export default function App() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [previewAge, setPreviewAge] = useState<number | string>(28);
   const previewHours = Math.max(0, Math.floor((40 - (Number(previewAge) || 0)) * 365.25 * 5.4));
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    return false;
-  });
-
-  const toggleDarkMode = () => {
-    setIsDark(prev => {
-      const next = !prev;
-      if (next) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      return next;
-    });
-  };
-
+  
   const freeHours = React.useMemo(() => {
     if (!userData) return 0;
     const remainingYears = userData.expectedAge - userData.age;
@@ -45,35 +27,28 @@ export default function App() {
   }, [userData]);
 
   React.useEffect(() => {
-    // Add dark mode checker
-    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDarkMode && !document.documentElement.classList.contains('dark')) {
-      document.documentElement.classList.add('dark');
-      setIsDark(true);
-    }
     if (view === 'dashboard') {
       setDashboardStep(1);
     }
   }, [view]);
 
   return (
-    <div className="min-h-screen mission-control-bg flex flex-col font-sans">
-      <header className="border-b border-[var(--color-line)] p-4 flex justify-between items-center bg-[var(--color-paper)]/80 backdrop-blur-md sticky top-0 z-50 transition-all">
+    <div className="min-h-screen flex flex-col font-sans overflow-hidden bg-black text-[#fcf6e8]">
+      {/* Dynamic Candle & Wind Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none w-full h-full">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[60%] mission-control-bg opacity-70"></div>
+        <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[300px] h-[300px] flame-bg" style={{ animation: 'wind 6s ease-in-out infinite alternate, flicker 4s infinite alternate' }}></div>
+      </div>
+      <div className="relative z-10 flex flex-col min-h-screen">
+      <header className="border-b border-[var(--color-line)] p-4 flex justify-between items-center bg-[var(--color-paper)]/30 backdrop-blur-md sticky top-0 z-50 transition-all">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-[8px] bg-[var(--color-accent)] flex items-center justify-center shadow-lg shadow-[var(--color-accent)]/20">
-            <span className="text-white font-black text-xl">D</span>
+            <Flame size={20} className="text-white" />
           </div>
           <span className="font-bold tracking-tight text-xl">DeathClock</span>
         </div>
         
         <div className="flex items-center gap-4">
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors rounded-full hover:bg-[var(--color-card)]"
-            title="Toggle Dark Mode"
-          >
-            {isDark ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
           {view === 'dashboard' && (
             <>
                <button 
@@ -120,24 +95,24 @@ export default function App() {
                 <motion.h1 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight leading-tight relative z-10"
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight leading-tight relative z-10 font-serif"
                 >
-                  You keep saying 'someday.'<br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-accent)] to-[#f97316]">Someday is already half over.</span>
+                  Time is a candle<br/><span className="text-transparent bg-clip-text bg-gradient-to-t from-[var(--color-accent-flame)] to-[#f97316]">burning at both ends...</span>
                 </motion.h1>
                 <motion.p 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ delay: 0.3, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                   className="text-lg md:text-xl text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed relative z-10"
                 >
-                  DeathClock calculates exactly how much free time you have left in your life — and shows you what you're actually doing with it.
+                  DeathClock reveals the fleeting embers of your free time — and illuminates where you are letting it turn to ash.
                 </motion.p>
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.8 }}
-                  className="bg-[var(--color-card)]/80 border border-[var(--color-line)] p-6 md:p-8 rounded-2xl max-w-2xl mx-auto backdrop-blur-sm relative z-10 group"
+                  transition={{ delay: 0.6, duration: 1.2 }}
+                  className="bg-[#150e09]/50 border border-[var(--color-line)] p-6 md:p-8 rounded-2xl max-w-2xl mx-auto backdrop-blur-md relative z-10 group shadow-[0_0_30px_rgba(229,106,23,0.1)]"
                 >
                   <div className="text-xl md:text-2xl text-[var(--color-ink)] leading-relaxed flex flex-wrap justify-center items-center gap-x-2 gap-y-2">
                     <span>If you're</span>
@@ -146,9 +121,9 @@ export default function App() {
                       value={previewAge} 
                       onChange={(e) => setPreviewAge(e.target.value)} 
                       onClick={(e) => (e.target as HTMLInputElement).select()}
-                      className="w-16 md:w-20 bg-transparent border-b-2 border-[var(--color-line)] group-hover:border-[var(--color-accent)] focus:border-[var(--color-accent)] text-center font-extrabold outline-none transition-all focus:bg-[var(--color-card-hover)] rounded-t-sm" 
+                      className="w-16 md:w-20 bg-transparent border-b-2 border-[var(--color-line)] group-hover:border-[var(--color-accent)] focus:border-[var(--color-accent)] text-center font-extrabold outline-none transition-all focus:bg-[var(--color-card-hover)] rounded-t-sm text-[var(--color-accent-flame)]" 
                     />
-                    <span>, you have roughly</span>
+                    <span>, your flame will extinguish in roughly</span>
                     <div className="inline-grid [grid-template-areas:'content'] items-center justify-center mx-1">
                       <AnimatePresence mode="popLayout">
                           <motion.span 
@@ -192,16 +167,16 @@ export default function App() {
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left border-t border-[var(--color-line)]/50 pt-12">
                      <div className="md:col-span-2 glass-card p-8 border-l-4 border-l-[var(--color-accent)]">
                         <div className="text-6xl font-mono font-medium tracking-tight text-[var(--color-ink)] mb-4">7 years</div>
-                        <h3 className="text-xl font-bold mb-2">The average person spends 7 years of their life on social media.</h3>
-                        <p className="text-[var(--color-muted)] text-lg">That's not a metaphor. That's 61,320 hours you could have spent on anything else.</p>
+                        <h3 className="text-xl font-bold mb-2">The average soul surrenders 7 years of existence to social media.</h3>
+                        <p className="text-[var(--color-muted)] text-lg">That's not a metaphor. That's 61,320 hours of life, turned to ash.</p>
                      </div>
                      <div className="glass-card p-8">
                         <div className="text-4xl font-mono font-medium tracking-tight text-[var(--color-ink)] mb-4">43%</div>
-                        <p className="text-[var(--color-muted)] text-lg">of people feel they don't have time for things that matter to them.</p>
+                        <p className="text-[var(--color-muted)] text-lg">of people feel they don't have time for things that matter to their heart.</p>
                      </div>
-                     <div className="glass-card p-8 border-l-4 border-l-[#f97316]/50">
+                     <div className="glass-card p-8 border-l-4 border-l-[#f97316]/50 shadow-[0_0_20px_var(--color-accent-glow)]">
                         <div className="text-4xl font-mono font-medium tracking-tight text-[var(--color-ink)] mb-4">90%</div>
-                        <p className="text-[var(--color-muted)] text-lg">of people aged 18–35 say they have goals they haven't started yet.</p>
+                        <p className="text-[var(--color-muted)] text-lg">of young souls carry unspoken dreams they haven't dared to ignite.</p>
                      </div>
                    </div>
                 </div>
@@ -326,14 +301,14 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      <footer className="border-t border-[var(--color-line)] p-8 text-center bg-[var(--color-paper)]/50 backdrop-blur-md mt-auto relative z-10">
+      <footer className="border-t border-[var(--color-line)] p-8 text-center bg-[var(--color-paper)]/10 backdrop-blur-md mt-auto relative z-10">
         <div className="max-w-4xl mx-auto flex flex-col items-center gap-4">
-          <div className="text-xs text-[var(--color-muted)]">
-            © 2026 DeathClock — Every Second is an Investment.
+          <div className="text-xs text-[var(--color-muted)] font-serif tracking-wide">
+            © 2026 DeathClock — The flame only burns once.
           </div>
           <div className="flex gap-6 text-xs text-[var(--color-muted)]/50">
-            <button onClick={() => setView('how-it-works')} className="hover:text-[var(--color-ink)] transition-colors cursor-pointer text-[var(--color-muted)]/70">How it works</button>
-            <button onClick={() => setView('privacy')} className="hover:text-[var(--color-ink)] transition-colors cursor-pointer text-[var(--color-muted)]/70">Privacy</button>
+            <button onClick={() => setView('how-it-works')} className="hover:text-[var(--color-accent-flame)] transition-colors cursor-pointer text-[var(--color-muted)]/70">How it works</button>
+            <button onClick={() => setView('privacy')} className="hover:text-[var(--color-accent-flame)] transition-colors cursor-pointer text-[var(--color-muted)]/70">Privacy</button>
           </div>
         </div>
       </footer>
@@ -345,6 +320,7 @@ export default function App() {
         freeHours={freeHours}
         goals={goals}
       />
+      </div>
     </div>
   );
 }

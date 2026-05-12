@@ -146,20 +146,20 @@ export default function LifeClock({ userData }: LifeClockProps) {
     if (stats.freeRemainingHours > 80000) {
       return (
         <span className="italic">
-          "You have more time than you think. The question isn't whether you have time — it's what you're choosing to do with it."
+          "Your flame burns bright and long. The question isn't how much wax remains, but what you choose to illuminate."
         </span>
       );
     }
     if (stats.freeRemainingHours >= 40000) {
       return (
         <span className="italic">
-          "You have <span className="font-bold text-[var(--color-accent)] font-mono text-base">{formatNumber(stats.freeRemainingHours)}</span> free hours left — roughly {(stats.freeRemainingHours / (24*365.25)).toFixed(1)} years of real choice. That sounds like a lot. It isn't."
+          "You have <span className="font-bold text-[var(--color-accent)] font-mono text-base">{formatNumber(stats.freeRemainingHours)}</span> hours left — roughly {(stats.freeRemainingHours / (24*365.25)).toFixed(1)} years of choice before the darkness. It sounds like an eternity. It is barely a spark."
         </span>
       );
     }
     return (
       <span className="italic">
-        "Every hour from here matters more than the last. You already know this. Now you can see it."
+        "Every hour burns brighter as the wick grows short. You already know this. Now you can watch the embers fade."
       </span>
     );
   };
@@ -171,31 +171,31 @@ export default function LifeClock({ userData }: LifeClockProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
-          className="absolute -top-12 text-center text-lg text-[var(--color-muted)] italic font-light w-full"
+          className="absolute -top-12 text-center text-lg text-[var(--color-muted)] italic font-light w-full font-serif"
         >
-          "Here's your life, in numbers."
+          "The embers of your existence."
         </motion.p>
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative aspect-square max-w-[400px] mx-auto w-full glass-card flex items-center justify-center p-8 bg-[var(--color-card)]/50 mt-4"
+          className="relative aspect-square max-w-[400px] mx-auto w-full glass-card flex items-center justify-center p-8 bg-transparent mt-4 shadow-[0_0_50px_rgba(229,106,23,0.15)]"
         >
-          <svg ref={svgRef} className="w-full h-full drop-shadow-2xl opacity-90" />
+          <svg ref={svgRef} className="w-full h-full drop-shadow-[0_0_15px_var(--color-accent-glow)] opacity-90" />
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <motion.span 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="text-xs uppercase tracking-widest text-[var(--color-muted)] font-medium"
+            className="text-[10px] uppercase tracking-[0.3em] text-[var(--color-accent-flame)] font-medium opacity-80"
           >
-            Balance
+            Flame Left
           </motion.span>
           <motion.span 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, type: "spring" }}
-            className="text-4xl font-mono font-medium tracking-tight mt-1"
+            className="text-4xl font-mono font-medium tracking-tight mt-1 text-[var(--color-ink)]"
           >
             {formatNumber(stats.totalRemainingHours)}
           </motion.span>
@@ -203,7 +203,7 @@ export default function LifeClock({ userData }: LifeClockProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.4 }}
-            className="text-xs uppercase tracking-widest text-[var(--color-muted)] font-medium mt-1"
+            className="text-[10px] uppercase tracking-[0.3em] text-[var(--color-muted)] font-medium mt-1"
           >
             Hours
           </motion.span>
@@ -219,24 +219,24 @@ export default function LifeClock({ userData }: LifeClockProps) {
         className="space-y-8"
       >
         <motion.div variants={itemVariants} className="space-y-2">
-          <div className="inline-block border border-[var(--color-line)] bg-[var(--color-card)] px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] tracking-wider">
-            Reality Check Phase 01
+          <div className="inline-block border border-[var(--color-accent)]/30 bg-[#1a110a] px-3 py-1 rounded-full font-mono text-xs text-[var(--color-accent-flame)] tracking-wider">
+            Phase 01: The Fading Light
           </div>
-          <h2 className="text-3xl font-bold tracking-tight">The Inventory</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-[var(--color-ink)] font-serif">What Remains</h2>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <StatCard 
             variants={itemVariants}
             icon={<Clock size={16} />} 
-            label="Remaining Years" 
+            label="Time Before Ash" 
             value={stats.yearsRemaining.toFixed(1)} 
             sub="Total estimated duration"
           />
           <StatCard 
             variants={itemVariants}
             icon={<Sun size={16} />} 
-            label="Conscious Hours" 
+            label="Hours Awake" 
             value={formatNumber(stats.awakeRemainingHours)} 
             sub="Excluding sleeping time"
             highlight
@@ -244,30 +244,30 @@ export default function LifeClock({ userData }: LifeClockProps) {
           <StatCard 
             variants={itemVariants}
             icon={<Moon size={16} />} 
-            label="Sleeping Time" 
+            label="Hours in Shadows" 
             value={formatNumber(stats.totalRemainingHours - stats.awakeRemainingHours)} 
-            sub="Hours lost to dreams"
+            sub="Hours lost to the dark"
           />
           <StatCard 
             variants={itemVariants}
             icon={<Coffee size={16} />} 
-            label="Net Free Time" 
+            label="Time to Burn" 
             value={formatNumber(stats.freeRemainingHours)} 
-            sub="Real time for goals"
+            sub="Real time for your soul"
             highlight
             accent
           />
         </div>
         
-        <motion.div variants={itemVariants} className="glass-card p-5 border-l-4 border-l-[var(--color-accent)] bg-gradient-to-br from-[var(--color-accent)]/10 to-transparent">
-           <p className="text-sm text-[var(--color-ink)]/90 leading-relaxed">
+        <motion.div variants={itemVariants} className="glass-card p-5 border-l-4 border-l-[var(--color-accent)] shadow-[0_0_20px_var(--color-accent-glow)]">
+           <p className="text-sm text-[var(--color-ink)]/90 leading-relaxed font-serif">
              {getRealityCheck()}
            </p>
         </motion.div>
         
-        <motion.div variants={itemVariants} className="glass-card p-5 border-l-4 border-l-[#f97316]/50 bg-gradient-to-br from-[#f97316]/10 to-transparent">
-           <p className="text-sm text-[var(--color-ink)]/90 leading-relaxed italic">
-             "You'll spend <span className="font-mono text-[#f97316] font-bold">{((userData.socialHours * 365.25 * stats.yearsRemaining) / (24 * 365.25)).toFixed(1)} years</span> of that scrolling. That's <span className="font-mono font-bold text-[#f97316]">{formatNumber(userData.socialHours * 365.25 * stats.yearsRemaining)} hours</span> — enough time to learn 3 new languages, write 10 books, or build a company."
+        <motion.div variants={itemVariants} className="glass-card p-5 border-l-4 border-l-[#f97316]/80 bg-[#1a110a]">
+           <p className="text-sm text-[var(--color-ink)]/90 leading-relaxed italic font-serif">
+             "You'll let <span className="font-mono text-[#f97316] font-bold">{((userData.socialHours * 365.25 * stats.yearsRemaining) / (24 * 365.25)).toFixed(1)} years</span> of that burn away into screens. That's <span className="font-mono font-bold text-[#f97316]">{formatNumber(userData.socialHours * 365.25 * stats.yearsRemaining)} hours</span> — a life of your own, surrendered."
            </p>
         </motion.div>
       </motion.div>
